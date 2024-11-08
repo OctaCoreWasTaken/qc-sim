@@ -5,16 +5,21 @@ Input.-valid:focus {
     border: tall $success;
 }
 Input {
-    margin: 1 1;
-}
-Label {
-    margin: 1 2;
-}
-Pretty {
-    margin: 1 2;
+    width: 75%;
+    dock: right;
 }
 
 Config {
+    layout: horizontal;
+    background: $boost;
+    height: 5;
+    margin: 1;
+    min_width: 50;
+    padding: 1;
+    
+}
+
+Config_Special {
     layout: horizontal;
     background: $boost;
     height: 5;
@@ -28,6 +33,13 @@ SettingsNameDisplay {
     content-align: center middle;
     text-opacity: 60%;
     height: 3;
+}
+
+SpecialSettingsNameDisplay { 
+    content-align: left middle;
+    text-opacity: 60%;
+    height: 3;
+    padding: 0 7;
 }
 
 Button {

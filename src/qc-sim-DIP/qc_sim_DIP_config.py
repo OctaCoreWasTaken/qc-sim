@@ -17,6 +17,9 @@ def read_json():
 class SettingsNameDisplay(Static):
     """Widget to display the QC system settings' name from qc_sim_DIP_settings.json"""
 
+class SpecialSettingsNameDisplay(Static):
+    """Widget to display the QC system special stettings' name from qc_sim_DIP_settings.json"""
+
 class Config(Static):
     """Widget of the config system"""
 
@@ -46,7 +49,7 @@ class Config_Special(Static):
 
     def compose(self) -> ComposeResult:
         """Create widget"""
-        yield SettingsNameDisplay(f"{self.item[0]}: {self.item[1]}")
+        yield SpecialSettingsNameDisplay(f"{self.item[0]}: {self.item[1]}")
         yield Input(placeholder="Enter an integer...",
                     validators=[Function(is_integer,"Value is not an integer"),
                                 Number(minimum=1,maximum=1000)])
@@ -55,7 +58,7 @@ class Config_Special(Static):
     def show_invalid_reasons(self,event: Input.Changed) -> None:
         inputv = self.query_one(Input)
         if is_integer(inputv.value): json_file[self.item[0]] = int(inputv.value); self.item[1] = inputv.value
-        sndisplay = self.query_one(SettingsNameDisplay)
+        sndisplay = self.query_one(SpecialSettingsNameDisplay)
         sndisplay.update(f"{self.item[0]}: {self.item[1]}")
 
 def is_integer(value: str) -> bool:
