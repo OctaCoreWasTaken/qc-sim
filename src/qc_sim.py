@@ -143,13 +143,13 @@ class Qubit:
         collapse = np.random.choice([self.low_orbit_energy,self.high_orbit_energy],p=[1 - abs(po2),abs(po2)])
         self.energy_level = collapse
         if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([__Sigma__,self,P])
-    def Omega(self,P2) -> None:
+    def Omega(self,Q2) -> None:
         """Acts as the CNOT gate and entangles qubit states."""
-        Ee2 = ((self.energy_level - self.low_orbit_energy) / (self.high_orbit_energy - self.low_orbit_energy)) * P2._Sigma(1)
+        Ee2 = ((self.energy_level - self.low_orbit_energy) / (self.high_orbit_energy - self.low_orbit_energy)) * Q2._Sigma(1)
         po2 = self._Po2(Ee2)
         collapse = np.random.choice([self.low_orbit_energy,self.high_orbit_energy],p=[1 - abs(po2),abs(po2)])
-        P2.energy_level = collapse
-        if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([__Omega__,self,P2.index,None])
+        Q2.energy_level = collapse
+        if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([__Omega__,self,Q2.index,None])
     def Gamma(self,P: float) -> None:
         """Allows for easy superposition manipulation in relation to the 0 (up or in this case down) state. 
            !! Applying multiple of these gates in series multiplies their probabilities rather than adding 

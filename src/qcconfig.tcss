@@ -9,10 +9,21 @@ Input {
     dock: right;
 }
 
+AreYouSureScreen{
+    padding: 15;
+}
+
+TextAYS{
+    content-align: center middle;
+    height: 3;
+    text-style: bold;
+}
+
 Label {
     margin: 1 1;
     text-style: bold;
     height: 2%;
+    padding: 0 25;
 }
 
 Config {

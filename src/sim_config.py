@@ -3,7 +3,7 @@ from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer, Button, Static, Input, Label
 from textual.validation import Function, Number, ValidationResult, Validator
 from textual.containers import ScrollableContainer
-from textual.color import Color
+from textual.screen import Screen
 import sys
 from sim_dependencies import *
 
@@ -24,6 +24,9 @@ class SettingsNameDisplay(Static):
 
 class SpecialSettingsNameDisplay(Static):
     """Widget to display the QC system special stettings' name from qc_sim_DIP_settings.json"""
+
+class TextAYS(Static):
+    """Widget to display text for the Are you sure screen"""
 
 class Config(Static):
     """Widget of the config system"""
@@ -71,6 +74,21 @@ def is_integer(value: str) -> bool:
     except: returnv = False
     return returnv
 
+class AreYouSureScreen(Screen):
+    BINDINGS = [("y","pop_screen_y","Yes"),("n","app.pop_screen","No")]
+
+    def compose(self) -> ComposeResult:
+        yield TextAYS("- Are you sure? -",id="title")
+        yield TextAYS("Are you sure you want to save?")
+        yield TextAYS("Press (y) for yes and (n) for no",id="choice")
+
+    def action_pop_screen_y(self) -> None:
+        json_object = json.dumps(json_file,indent=4)
+        with open("qc_sim_settings.json","w") as outfile:
+            outfile.write(json_object)
+        app.pop_screen()
+
+
 class Config_App(App):
     """The config app used to config the QC simulator"""
 
@@ -115,12 +133,13 @@ class Config_App(App):
     def action_quit_button(self) -> None:
         """Action to quit"""
         exit()
+    
+    def on_mount(self) -> None:
+        self.install_screen(AreYouSureScreen(),name="areyousure")
 
     def action_save_button(self) -> None:
         """Action to save the new settings"""
-        json_object = json.dumps(json_file,indent=4)
-        with open("qc_sim_settings.json","w") as outfile:
-            outfile.write(json_object)
+        self.push_screen('areyousure')
 
 if __name__  == "__main__":
     app = Config_App()
