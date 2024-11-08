@@ -74,13 +74,20 @@ def is_integer(value: str) -> bool:
     except: returnv = False
     return returnv
 
-class AreYouSureScreen(Screen):
-    BINDINGS = [("y","pop_screen_y","Yes"),("n","app.pop_screen","No")]
-
+class AreYouSureText(Static):
     def compose(self) -> ComposeResult:
         yield TextAYS("- Are you sure? -",id="title")
         yield TextAYS("Are you sure you want to save?")
         yield TextAYS("Press (y) for yes and (n) for no",id="choice")
+        
+
+class AreYouSureScreen(Screen):
+    BINDINGS = [("y","pop_screen_y","Yes"),("n","app.pop_screen","No")]
+
+    def compose(self) -> ComposeResult:
+        yield Header(icon="⚙")
+        yield Footer()
+        yield AreYouSureText()
 
     def action_pop_screen_y(self) -> None:
         json_object = json.dumps(json_file,indent=4)
@@ -92,7 +99,7 @@ class AreYouSureScreen(Screen):
 class Config_App(App):
     """The config app used to config the QC simulator"""
 
-    BINDINGS = [("d","toggle_dark","Toggle dark mode"),("h","home_button","Revert to home page"),("q","quit_button","Quit"),
+    BINDINGS = [("d","toggle_dark","Toggle dark mode"),("q","quit_button","Quit"),
                 ("s","save_button","Save config")]
 
     CSS_PATH = "qcconfig.tcss"
@@ -124,10 +131,6 @@ class Config_App(App):
 
     def action_toggle_dark(self) -> None:
         """Action to toggle dark mode"""
-        self.dark = not self.dark
-
-    def action_home_button(self) -> None:
-        """Action to revert to home page"""
         self.dark = not self.dark
     
     def action_quit_button(self) -> None:

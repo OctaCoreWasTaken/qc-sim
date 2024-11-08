@@ -9,7 +9,7 @@ Input {
     dock: right;
 }
 
-AreYouSureScreen{
+AreYouSureText{
     padding: 15;
 }
 
