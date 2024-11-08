@@ -1,5 +1,6 @@
 import json
 import numpy as np
+import copy
 
 MEASUREMENT_MODE_EV = 0
 MEASUREMENT_MODE_BIN = 1
@@ -7,7 +8,9 @@ FLAG_WARNING = False
 FLAG_INITIALIZED = False
 FLAG_RECORD_HISTORY = False
 GLOBAL_HISTORY = []
+GLOBAL_STARTING_POINT = []
 QUBIT_NUMBER = 0
+FLAG_STARTING_POINT = True
 
 class bcolors:
     HEADER = '\033[95m'
@@ -33,6 +36,8 @@ for item in json_file.items():
         FLAG_RECORD_HISTORY = True if item[1] == "On" else False
     if item[0] == "QUBIT_NUMBER":
         QUBIT_NUMBER = item[1]
+    if item[0] == "FLAG_STARTING_POINT-dev":
+        FLAG_STARTING_POINT = True if item[1] == "On" else False
 
 def __Po2__(self,Ee):
     """Sub-version of _Po2 used for CopenhagenProbabilities"""
@@ -76,9 +81,9 @@ def CopenhagenProbabilities(mm = MEASUREMENT_MODE_EV,iterations = 100):
         eVs = []
         for i,qubit in enumerate(QUBITS):
             eVs.append(qubit.energy_level)
-            QUBITS[i].energy_level = qubit.low_orbit_energy
-        low = np.array([0 for i in range(len(QUBITS))])
-        high = np.array([0 for i in range(len(QUBITS))])
+            QUBITS[i].energy_level = GLOBAL_STARTING_POINT[i].energy_level
+        low = np.array([0 for i in range(QUBIT_NUMBER)])
+        high = np.array([0 for i in range(QUBIT_NUMBER)])
         for i in range(iterations):
             for action in GLOBAL_HISTORY:
                 if len(action) == 3:
@@ -88,9 +93,10 @@ def CopenhagenProbabilities(mm = MEASUREMENT_MODE_EV,iterations = 100):
             for i, q in enumerate(QUBITS):
                 if q.energy_level == q.low_orbit_energy:
                     low[i] += 1
+                    q.energy_level = GLOBAL_STARTING_POINT[i].energy_level
                 else:
                     high[i] += 1
-                    q.energy_level = q.low_orbit_energy
+                    q.energy_level = GLOBAL_STARTING_POINT[i].energy_level
         low = low / float(iterations)
         high = high / float(iterations)
         qubit_low_orbitals = [q2.low_orbit_energy for q2 in QUBITS]
@@ -170,11 +176,13 @@ class DIP_Qubit_Model:
         if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([__Gamma__,self,P])
     def Measure(self):
         """Measures and collapses the value of the given qubit class."""
-        global GLOBAL_HISTORY
-        if FLAG_RECORD_HISTORY: GLOBAL_HISTORY = []
+        global GLOBAL_HISTORY, GLOBAL_STARTING_POINT
+        if FLAG_RECORD_HISTORY: GLOBAL_HISTORY = [] 
+        if FLAG_STARTING_POINT: GLOBAL_STARTING_POINT = copy.deepcopy(QUBITS)
         return self.energy_level if self.measurement_mode == MEASUREMENT_MODE_EV else (self.energy_level - self.low_orbit_energy) / (self.high_orbit_energy - self.low_orbit_energy)
 
     def __str__(self):
         return bcolors.OKCYAN + str(self.Measure()) + bcolors.ENDC
 
 QUBITS = [DIP_Qubit_Model(x,MEASUREMENT_MODE_BIN) for x in range(QUBIT_NUMBER)]
+GLOBAL_STARTING_POINT = copy.deepcopy(QUBITS)

@@ -46,11 +46,11 @@ Button {
     width: 16;
 }
 
-#ON_FLAG_WARNING{
+#ON{
     dock: left;
 }
 
-#OFF_FLAG_WARNING{
+#OFF{
     dock: right;
 }
 
@@ -60,12 +60,4 @@ Button {
 
 .toggle_off SettingsNameDisplay{
     text-opacity: 100%;
-}
-
-#ON_FLAG_RECORD_HISTORY{
-    dock: left;
-}
-
-#OFF_FLAG_RECORD_HISTORY{
-    dock: right;
 }

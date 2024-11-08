@@ -5,8 +5,13 @@ from textual.widgets import Header, Footer, Button, Static, Input
 from textual.validation import Function, Number, ValidationResult, Validator
 from textual.containers import ScrollableContainer
 import json
+import sys
 
 json_file = None
+ADMIN = False
+
+for arg in sys.argv: 
+    if arg == "--admin": ADMIN = True
 
 def read_json():
     with open('qc_sim_DIP_settings.json','r') as openfile:
@@ -26,18 +31,18 @@ class Config(Static):
     def compose(self) -> ComposeResult:
         """Create widget"""
         yield SettingsNameDisplay(f"{self.item[0]}: {self.item[1]}")
-        yield Button("On",id="ON_" + self.item[0],variant="success")
-        yield Button("Off",id="OFF_" + self.item[0],variant="error")
+        yield Button("On",id="ON",variant="success")
+        yield Button("Off",id="OFF",variant="error")
 
     def on_button_pressed(self,event: Button.Pressed) -> None:
         global json_file
-        if event.button.id == "ON_" + self.item[0]:
+        if event.button.id == "ON":
             self.add_class("toggle_on")
             json_file[self.item[0]] = "On"
             self.item[1] = "On"
             sndisplay = self.query_one(SettingsNameDisplay)
             sndisplay.update(f"{self.item[0]}: {self.item[1]}")
-        elif event.button.id == "OFF_" + self.item[0]:
+        elif event.button.id == "OFF":
             self.add_class("toggle_off")
             json_file[self.item[0]] = "Off"
             self.item[1] = "Off"
@@ -83,6 +88,7 @@ class Config_App(App):
         configs = []
         special_configs = []
         for itemv in json_file.items():
+            if "-dev" in itemv[0] and not ADMIN: continue
             if type(itemv[1]) != int:
                 new_config = Config()
                 new_config.scroll_visible()
