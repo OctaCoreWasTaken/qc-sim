@@ -52,7 +52,7 @@ Outside the qubits there is a function called `CopenhagenProbabilities` which co
 energy state. It is not finished so feel free to report bugs.
 
 Example program: `example.py`
-```
+```python
   from qc_sim import *
 
   QUBITS[0].Sigma(0.5) # Putting the qubit in a superposition.
