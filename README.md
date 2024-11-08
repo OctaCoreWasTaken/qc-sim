@@ -11,5 +11,5 @@ some flags related to development. At the time of writing this, the only admin s
 the act of measurement to update the starting point for all qubits. This affects only CopenhagenProbabilities.
 
 # What's new?
-In this small branch update you can find some better UI. Such as a screen that prompts you "are you sure?" before saving in the config application
+In this small branch update you can find some better UI. Such as a screen that prompts you "are you sure?" before saving in the config application.
 Other than that there have been a few quality of life changes that allowed me to clean up some of my code.
