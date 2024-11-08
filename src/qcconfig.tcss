@@ -9,6 +9,12 @@ Input {
     dock: right;
 }
 
+Label {
+    margin: 1 1;
+    text-style: bold;
+    height: 2%;
+}
+
 Config {
     layout: horizontal;
     background: $boost;

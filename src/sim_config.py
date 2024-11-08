@@ -1,10 +1,11 @@
 from textual import on
 from textual.app import App, ComposeResult
-from textual.widgets import Header, Footer, Button, Static, Input
+from textual.widgets import Header, Footer, Button, Static, Input, Label
 from textual.validation import Function, Number, ValidationResult, Validator
 from textual.containers import ScrollableContainer
-import json
+from textual.color import Color
 import sys
+from sim_dependencies import *
 
 json_file = None
 ADMIN = False
@@ -13,7 +14,7 @@ for arg in sys.argv:
     if arg == "--admin": ADMIN = True
 
 def read_json():
-    with open('qc_sim_DIP_settings.json','r') as openfile:
+    with open('qc_sim_settings.json','r') as openfile:
         json_file = json.load(openfile)
     return json_file
 
@@ -82,7 +83,7 @@ class Config_App(App):
         global json_file
         """Child widgets"""
         self.title = '- Quantum simulation settings config -'
-        if ADMIN: self.title = '- Admin mode. WARNING: Admin mode is only for development! -'
+        if ADMIN: self.title = '- Admin mode. -'; yield Label("WARNING: Any setting that is followed by the suffix -dev is an admin setting! Development only!")
         yield Header(icon='⚙')
         yield Footer()
         json_file = read_json()
@@ -118,7 +119,7 @@ class Config_App(App):
     def action_save_button(self) -> None:
         """Action to save the new settings"""
         json_object = json.dumps(json_file,indent=4)
-        with open("qc_sim_DIP_settings.json","w") as outfile:
+        with open("qc_sim_settings.json","w") as outfile:
             outfile.write(json_object)
 
 if __name__  == "__main__":

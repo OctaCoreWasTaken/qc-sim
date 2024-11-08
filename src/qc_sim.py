@@ -1,7 +1,7 @@
 #TODO: fix CopenhagenProbbilities.
-import json
 import numpy as np
 import copy
+from sim_dependencies import *
 
 MEASUREMENT_MODE_EV = 0
 MEASUREMENT_MODE_BIN = 1
@@ -13,19 +13,8 @@ GLOBAL_STARTING_POINT = []
 QUBIT_NUMBER = 0
 FLAG_STARTING_POINT = True
 
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
 def read_json():
-    with open('qc_sim_DIP_settings.json','r') as openfile:
+    with open('qc_sim_settings.json','r') as openfile:
         json_file = json.load(openfile)
     return json_file
 
