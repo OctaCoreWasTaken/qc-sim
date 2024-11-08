@@ -53,11 +53,11 @@ energy state. It is not finished so feel free to report bugs.
 
 Example program: `example.py`
 ```python
-  from qc_sim import *
+from qc_sim import *
 
-  QUBITS[0].Sigma(0.5) # Putting the qubit in a superposition.
-  QUBITS[0].Omega(QUBITS[1]) # Entangling the two qubits via CNOT.
-  print(QUBITS[0],QUBITS[1]) # Measuring the two qubits and printing the result.
+QUBITS[0].Sigma(0.5) # Putting the qubit in a superposition.
+QUBITS[0].Omega(QUBITS[1]) # Entangling the two qubits via CNOT.
+print(QUBITS[0],QUBITS[1]) # Measuring the two qubits and printing the result.
 ```
 
 # What's new?
