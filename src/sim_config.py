@@ -13,7 +13,7 @@ for arg in sys.argv:
     if arg == "--admin": ADMIN = True
 
 def read_json():
-    with open('qc_sim_DIP_settings.json','r') as openfile:
+    with open('qc_sim_settings.json','r') as openfile:
         json_file = json.load(openfile)
     return json_file
 
@@ -118,7 +118,7 @@ class Config_App(App):
     def action_save_button(self) -> None:
         """Action to save the new settings"""
         json_object = json.dumps(json_file,indent=4)
-        with open("qc_sim_DIP_settings.json","w") as outfile:
+        with open("qc_sim_settings.json","w") as outfile:
             outfile.write(json_object)
 
 if __name__  == "__main__":

@@ -24,8 +24,8 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-def read_json():
-    with open('qc_sim_DIP_settings.json','r') as openfile:
+def read_json() -> dict:
+    with open('qc_sim_settings.json','r') as openfile:
         json_file = json.load(openfile)
     return json_file
 
@@ -40,12 +40,12 @@ for item in json_file.items():
     if item[0] == "FLAG_STARTING_POINT-dev":
         FLAG_STARTING_POINT = True if item[1] == "On" else False
 
-def __Po2__(self,Ee):
+def __Po2__(self,Ee: float) -> float:
     """Sub-version of _Po2 used for CopenhagenProbabilities"""
     d = self.high_orbit_energy - self.low_orbit_energy
     return np.sin(((Ee - d/2) * np.pi) / 5) * 0.5 + 0.5
 
-def __Sigma__(self,P):
+def __Sigma__(self,P: float) -> None:
     """Sub-version of Sigma used for CopenhagenProbabilities"""
     s = -1 if self.energy_level > self.low_orbit_energy else 1
     Ee = self.energy_level + P * (self.high_orbit_energy - self.low_orbit_energy) * s
@@ -53,12 +53,12 @@ def __Sigma__(self,P):
     collapse = np.random.choice([self.low_orbit_energy,self.high_orbit_energy],p=[1 - abs(po2),abs(po2)])
     self.energy_level = collapse
 
-def __rSigma__(self,P):
+def __rSigma__(self,P:float) -> float:
     """Sub-version of _Sigma used for CopenhagenProbabilities"""
     s = -1 if self.energy_level > self.low_orbit_energy else 1
     return self.energy_level + P * (self.high_orbit_energy - self.low_orbit_energy) * s
 
-def __Gamma__(self,P):
+def __Gamma__(self,P: float) -> None:
     """Sub-version of Gamma used for CopenhagenProbabilities"""
     s = 1 if self.energy_level > self.low_orbit_energy else -1
     Ee = self.energy_level + P * (self.high_orbit_energy - self.low_orbit_energy) * s
@@ -66,14 +66,14 @@ def __Gamma__(self,P):
     collapse = np.random.choice([self.low_orbit_energy,self.high_orbit_energy],p=[1 - abs(po2),abs(po2)])
     self.energy_level = collapse
 
-def __Omega__(self,P2):
+def __Omega__(self,P2) -> None:
     """Sub-version of Omega used for CopenhagenProbabilities"""
     Ee2 = ((self.energy_level - self.low_orbit_energy) / (self.high_orbit_energy - self.low_orbit_energy)) * __rSigma__(P2,1)
     po2 = __Po2__(self,Ee2)
     collapse = np.random.choice([self.low_orbit_energy,self.high_orbit_energy],p=[1 - abs(po2),abs(po2)])
     P2.energy_level = collapse
 
-def CopenhagenProbabilities(mm = MEASUREMENT_MODE_EV,iterations = 100):
+def CopenhagenProbabilities(mm: int = MEASUREMENT_MODE_EV,iterations: int = 100) -> np.ndarray:
     """Simple to use function to compute regular probabilities for the given QC system like you can in the old regular
        QC algorithm. Not finished""" #TODO !!!
     global FLAG_RECORD_HISTORY
@@ -107,12 +107,8 @@ def CopenhagenProbabilities(mm = MEASUREMENT_MODE_EV,iterations = 100):
     print(f"{bcolors.FAIL + bcolors.BOLD}ERROR: Cannot compute Copenhagen Probabilities! Missing history! Consider enabling FLAG_RECORD_HISTORY!{bcolors.ENDC}")
     exit()
 
-class DIP_Qubit_Model:
+class Qubit:
     """
-       **TL;DR**
-
-       DIP = Deterministic Ionizing Particle / (Electron jumping between orbitals)
-
        **Brief explanation of the system**
 
        It is a model conceptualised from the ground up as a separate quantum computing system
@@ -126,7 +122,7 @@ class DIP_Qubit_Model:
        This project is also a proof of concept and not a well developed technology (yet), however i do hope
        it will be able to change the world for the better. As of the time of writing this there hasn't
        been a paper that has been published on this subject."""
-    def __init__(self,index,mm = MEASUREMENT_MODE_EV):
+    def __init__(self,index: int,mm: int = MEASUREMENT_MODE_EV) -> None:
         global FLAG_INITIALIZED
         self.index = index
         self.low_orbit_energy = -10 # eV
@@ -138,17 +134,17 @@ class DIP_Qubit_Model:
             print(f"{bcolors.WARNING + bcolors.BOLD}Warning!: Printing of any particle counts as measurement and will collapse any superpostion!{bcolors.ENDC}")
             # print(f"{bcolors.BOLD}Consider using the CopenhagenProbabilities method to compute and print the approximate probabilities!{bcolors.ENDC}")
             FLAG_INITIALIZED = True
-    def _Po2(self,Ee):
+    def _Po2(self,Ee: float) -> float:
         """Computes the probability of any given energy state, especially inbetween. Unrealistic.
            Used for implmenting collapsing of the qubits."""
         d = self.high_orbit_energy - self.low_orbit_energy
         return np.sin(((Ee - d/2) * np.pi) / 5) * 0.5 + 0.5
-    def _Sigma(self,P):
+    def _Sigma(self,P: float) -> float:
         """Low level version of Sigma. Returns the energy level before collapsing. Unrealistic. 
            Used for implementing Omega."""
         s = -1 if self.energy_level > self.low_orbit_energy else 1
         return self.energy_level + P * (self.high_orbit_energy - self.low_orbit_energy) * s
-    def Sigma(self,P):
+    def Sigma(self,P: float) -> None:
         """Allows for easy superposition manipulation in relation to the 1 (down or in this case up) state. 
            !! Applying multiple of these gates in series multiplies their probabilities rather than adding 
            the energy being sent."""
@@ -158,14 +154,14 @@ class DIP_Qubit_Model:
         collapse = np.random.choice([self.low_orbit_energy,self.high_orbit_energy],p=[1 - abs(po2),abs(po2)])
         self.energy_level = collapse
         if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([__Sigma__,self,P])
-    def Omega(self,P2):
+    def Omega(self,P2) -> None:
         """Acts as the CNOT gate and entangles qubit states."""
         Ee2 = ((self.energy_level - self.low_orbit_energy) / (self.high_orbit_energy - self.low_orbit_energy)) * P2._Sigma(1)
         po2 = self._Po2(Ee2)
         collapse = np.random.choice([self.low_orbit_energy,self.high_orbit_energy],p=[1 - abs(po2),abs(po2)])
         P2.energy_level = collapse
         if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([__Omega__,self,P2.index,None])
-    def Gamma(self,P):
+    def Gamma(self,P: float) -> None:
         """Allows for easy superposition manipulation in relation to the 0 (up or in this case down) state. 
            !! Applying multiple of these gates in series multiplies their probabilities rather than adding 
            the energy being sent."""
@@ -175,15 +171,15 @@ class DIP_Qubit_Model:
         collapse = np.random.choice([self.low_orbit_energy,self.high_orbit_energy],p=[1 - abs(po2),abs(po2)])
         self.energy_level = collapse
         if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([__Gamma__,self,P])
-    def Measure(self):
+    def Measure(self) -> None:
         """Measures and collapses the value of the given qubit class."""
         global GLOBAL_HISTORY, GLOBAL_STARTING_POINT
         if FLAG_RECORD_HISTORY: GLOBAL_HISTORY = [] 
         if FLAG_STARTING_POINT: GLOBAL_STARTING_POINT = copy.deepcopy(QUBITS)
         return self.energy_level if self.measurement_mode == MEASUREMENT_MODE_EV else (self.energy_level - self.low_orbit_energy) / (self.high_orbit_energy - self.low_orbit_energy)
 
-    def __str__(self):
+    def __str__(self) -> None:
         return bcolors.OKCYAN + str(self.Measure()) + bcolors.ENDC
 
-QUBITS = [DIP_Qubit_Model(x,MEASUREMENT_MODE_BIN) for x in range(QUBIT_NUMBER)]
+QUBITS = [Qubit(x,MEASUREMENT_MODE_BIN) for x in range(QUBIT_NUMBER)]
 GLOBAL_STARTING_POINT = copy.deepcopy(QUBITS)
