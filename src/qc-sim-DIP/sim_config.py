@@ -1,4 +1,3 @@
-# TODO entire script
 from textual import on
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer, Button, Static, Input
@@ -82,7 +81,9 @@ class Config_App(App):
     def compose(self) -> ComposeResult:
         global json_file
         """Child widgets"""
-        yield Header()
+        self.title = '- Quantum simulation settings config -'
+        if ADMIN: self.title = '- Admin mode. WARNING: Admin mode is only for development! -'
+        yield Header(icon='⚙')
         yield Footer()
         json_file = read_json()
         configs = []
