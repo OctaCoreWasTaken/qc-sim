@@ -1,0 +1,59 @@
+Input.-valid {
+    border: tall $success 60%;
+}
+Input.-valid:focus {
+    border: tall $success;
+}
+Input {
+    margin: 1 1;
+}
+Label {
+    margin: 1 2;
+}
+Pretty {
+    margin: 1 2;
+}
+
+Config {
+    layout: horizontal;
+    background: $boost;
+    height: 5;
+    margin: 1;
+    min_width: 50;
+    padding: 1;
+    
+}
+
+SettingsNameDisplay { 
+    content-align: center middle;
+    text-opacity: 60%;
+    height: 3;
+}
+
+Button {
+    width: 16;
+}
+
+#ON_FLAG_WARNING{
+    dock: left;
+}
+
+#OFF_FLAG_WARNING{
+    dock: right;
+}
+
+.toggle_on SettingsNameDisplay{
+    text-opacity: 100%;
+}
+
+.toggle_off SettingsNameDisplay{
+    text-opacity: 100%;
+}
+
+#ON_FLAG_RECORD_HISTORY{
+    dock: left;
+}
+
+#OFF_FLAG_RECORD_HISTORY{
+    dock: right;
+}
