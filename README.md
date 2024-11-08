@@ -1,6 +1,10 @@
 # qc-sim - Quality of life changes and better UI.
 Quantum Simulator based on a brand new algorithm that aims to vastly improve speed and performance, allowing large quantum systems to be simulated.
 
+[!NOTE]
+This project is very new and the algorithm i made might be wrong in certain scenarios. If you find issues in the logic of the algorithm
+please feel free to open a new issue!
+
 # Instalation
 This project is **not** on pypi so you cant just do `pip install qc-sim`. However that doesn't mean its not easy to install it!
 To install the files of this project you can use `git clone https://github.com/OctaCoreWasTaken/qc-sim.git` in the terminal. 
@@ -16,10 +20,25 @@ will see an input box.
 Inbetween the two buttons there will be some text with the name of the flag (ex: `FLAG_WARNING`) followed by it's state (On/Off).
 Pressing the buttons will alter its state.
 
+[!IMPORTANT]
+The flag `FLAG_RECORD_HISTORY` does not enable my program to record your chrome history or anything as such. It refers to storing
+all the gates that you have applied on your qubits and so that it can be used with `CopenhagenProbabilities`.
+
+[!TIP]
+If you are not using `CopenhagenProbabilities` disabling the `FLAG_RECORD_HISTORY` flag will allow the program to run faster and
+take up less space. More useful the more gates you use.
+
 For the input box its the same. You can input any integer inside the box that is between 1 and 1000. 
 
 Saving the changes is easy. You just have to press `S` and you will get sent to a screen where the program asks if you are sure.
 Answering the prompt will revert you back to the home screen where based on your decision, your changes will be saved.
+
+If you run the config program with the argument `--admin`, this will enter admin mode where you can change some other 
+additional settings which are generally used during development.
+
+[!WARNING]
+Using the admin mode is only for development and it is not recommend to use it as such you could end up
+disabling or enabling some flags that will make the simulation run wrong!
 
 ## Programming
 Enough configuration! How about some programming?
