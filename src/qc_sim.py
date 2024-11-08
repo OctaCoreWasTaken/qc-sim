@@ -24,8 +24,8 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-def read_json():
-    with open('qc_sim_DIP_settings.json','r') as openfile:
+def read_json() -> dict:
+    with open('qc_sim_settings.json','r') as openfile:
         json_file = json.load(openfile)
     return json_file
 
@@ -40,12 +40,12 @@ for item in json_file.items():
     if item[0] == "FLAG_STARTING_POINT-dev":
         FLAG_STARTING_POINT = True if item[1] == "On" else False
 
-def __Po2__(self,Ee):
+def __Po2__(self,Ee: float) -> float:
     """Sub-version of _Po2 used for CopenhagenProbabilities"""
     d = self.high_orbit_energy - self.low_orbit_energy
     return np.sin(((Ee - d/2) * np.pi) / 5) * 0.5 + 0.5
 
-def __Sigma__(self,P):
+def __Sigma__(self,P: float) -> None:
     """Sub-version of Sigma used for CopenhagenProbabilities"""
     s = -1 if self.energy_level > self.low_orbit_energy else 1
     Ee = self.energy_level + P * (self.high_orbit_energy - self.low_orbit_energy) * s
@@ -53,12 +53,12 @@ def __Sigma__(self,P):
     collapse = np.random.choice([self.low_orbit_energy,self.high_orbit_energy],p=[1 - abs(po2),abs(po2)])
     self.energy_level = collapse
 
-def __rSigma__(self,P):
+def __rSigma__(self,P:float) -> float:
     """Sub-version of _Sigma used for CopenhagenProbabilities"""
     s = -1 if self.energy_level > self.low_orbit_energy else 1
     return self.energy_level + P * (self.high_orbit_energy - self.low_orbit_energy) * s
 
-def __Gamma__(self,P):
+def __Gamma__(self,P: float) -> None:
     """Sub-version of Gamma used for CopenhagenProbabilities"""
     s = 1 if self.energy_level > self.low_orbit_energy else -1
     Ee = self.energy_level + P * (self.high_orbit_energy - self.low_orbit_energy) * s
@@ -66,7 +66,7 @@ def __Gamma__(self,P):
     collapse = np.random.choice([self.low_orbit_energy,self.high_orbit_energy],p=[1 - abs(po2),abs(po2)])
     self.energy_level = collapse
 
-def __Omega__(self,P2):
+def __Omega__(self,P2) -> None:
     """Sub-version of Omega used for CopenhagenProbabilities"""
     Ee2 = ((self.energy_level - self.low_orbit_energy) / (self.high_orbit_energy - self.low_orbit_energy)) * __rSigma__(P2,1)
     po2 = __Po2__(self,Ee2)
