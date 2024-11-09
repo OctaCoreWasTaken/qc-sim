@@ -43,5 +43,5 @@ qubits.
 Running `sim_config.py` with the argument `--admin` will trigger admin mode enabling access to a few more settings.
 
 > [!WARNING]
-> Using the admin mode is only for development and it is not recommend to use it, because you could end up
-> disabling or enabling some flags that will make the simulation run wrong.
+> Admin mode is only for development and so it is not recommended to use it.
+> Configuring the system wrong might lead to the simulator not working.
