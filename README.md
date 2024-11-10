@@ -8,11 +8,14 @@ An algorithm designed to simulate quantum computers faster and more efficient.
 To install the files of this project you can use `git clone https://github.com/OctaCoreWasTaken/qc-sim.git` in the terminal to clone
 the repository. Having `git` installed is a requirement.
 
+Once you have cloned the repository you may now execute the command `pip install -r requirements.txt` inside the 
+newly created `qc-sim` folder. This will install all the requirements (libaries and packages) used by qc-sim automatically.
+
 # Usage
 
 To start, you import the module `qc_sim.py`. The `QUBIT` constant is a list of all the qubits in the computer. Each qubit has a set of logic gates:
   - `Sigma` - Puts the qubit in a superposition with the probability `P` in relation to the high energy state. Multiple `Sigma` gates followed by one another have their probabilities multiplied.
-  -`Gamma` - Same as `Sigma` but in relation to the low energy state.
+  - `Gamma` - Same as `Sigma` but in relation to the low energy state.
   - `Omega` - Acts as a CNOT gate and can entangle two qubits. `Q2` is refering to the target qubit.
   - `Measure` - Measures the qubit and has an effect on the outcome of `CopenhagenProbabilities`.
 
@@ -25,7 +28,10 @@ from qc_sim import *
 
 QUBITS[0].Sigma(0.5) # Putting the qubit in a superposition.
 QUBITS[0].Omega(QUBITS[1]) # Entangling the two qubits via CNOT.
-print(QUBITS[0],QUBITS[1]) # Measuring the two qubits and printing the result.
+QUBITS[0].Sigma(0.5) # Putting the qubit in a superposition again.
+QUBITS[0].Measure() # Measuring the qubit. Function also returns the collapsed value.
+p = CopenhagenProbabilities()
+print(p[0],p[1]) # Printing the copenhagen probabilities of the two qubits q0 and q1.
 ```
 
 ## Config
