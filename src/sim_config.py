@@ -52,7 +52,7 @@ class Config(Static):
             sndisplay = self.query_one(SettingsNameDisplay)
             sndisplay.update(f"{self.item[0]}: {self.item[1]}")
 
-class Config_Special(Static):
+class Config_Input(Static):
     """Widget of the config system"""
 
     def compose(self) -> ComposeResult:
@@ -116,13 +116,13 @@ class Config_App(App):
         special_configs = []
         for itemv in json_file.items():
             if "-dev" in itemv[0] and not ADMIN: continue
-            if type(itemv[1]) != int:
+            if type(itemv[1]) != int and itemv[0] != "MEASUREMENT_MODE":
                 new_config = Config()
                 new_config.scroll_visible()
                 new_config.item = list(itemv)
                 configs.append(new_config)
                 continue
-            new_config = Config_Special()
+            new_config = Config_Input()
             new_config.scroll_visible()
             new_config.item = list(itemv)
             special_configs.append(new_config)
