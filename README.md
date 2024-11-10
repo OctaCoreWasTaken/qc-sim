@@ -13,7 +13,7 @@ newly created `qc-sim` folder. This will install all the requirements (libaries 
 
 # Usage
 
-To start, you import the module `qc_sim.py`. The `QUBIT` constant is a list of all the qubits in the computer. Each qubit has a set of logic gates:
+To start, you import the module `qc_sim.py`. The `QUBITS` constant is a list of all the qubits in the computer. Each qubit has a set of logic gates:
   - `Sigma` - Puts the qubit in a superposition with the probability `P` in relation to the high energy state. Multiple `Sigma` gates followed by one another have their probabilities multiplied.
   - `Gamma` - Same as `Sigma` but in relation to the low energy state.
   - `Omega` - Acts as a CNOT gate and can entangle two qubits. `Q2` is refering to the target qubit.
