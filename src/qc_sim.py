@@ -1,4 +1,4 @@
-#TODO: fix CopenhagenProbbilities.
+#TODO: fix CopenhagenProbbilities? add unit tests.
 import numpy as np
 import copy
 from sim_dependencies import *
