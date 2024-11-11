@@ -1,9 +1,8 @@
 import unittest
 import qc_sim
 import copy
+from sim_dependencies import *
 
-initflag = copy.deepcopy(qc_sim.FLAG_WARNING)
-qc_sim.FLAG_WARNING = False
 
 class TestQubit(unittest.TestCase):
     def test_po2(self):
@@ -50,4 +49,7 @@ class TestQubit(unittest.TestCase):
         self.assertNotEqual(starting_point,qc_sim.GLOBAL_STARTING_POINT)
         self.assertEqual(result,q.energy_level)
 
-qc_sim.FLAG_WARNING = initflag
+V_PRESENT = False
+
+if __name__ == '__main__':
+    unittest.main()

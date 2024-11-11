@@ -12,11 +12,6 @@ ADMIN = False
 for arg in sys.argv: 
     if arg == "--admin": ADMIN = True; break
 
-def read_json():
-    with open('qc_sim_settings.json','r') as openfile:
-        json_file = json.load(openfile)
-    return json_file
-
 
 class SettingsNameDisplay(Static):
     """Widget to display the QC system settings' name from qc_sim_DIP_settings.json"""
