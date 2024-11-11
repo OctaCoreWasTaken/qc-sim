@@ -4,14 +4,13 @@ from textual.widgets import Header, Footer, Button, Static, Input, Label
 from textual.validation import Function, Number, ValidationResult, Validator
 from textual.containers import ScrollableContainer
 from textual.screen import Screen
-import sys
 from sim_dependencies import *
 
 json_file = None
 ADMIN = False
 
 for arg in sys.argv: 
-    if arg == "--admin": ADMIN = True
+    if arg == "--admin": ADMIN = True; break
 
 def read_json():
     with open('qc_sim_settings.json','r') as openfile:

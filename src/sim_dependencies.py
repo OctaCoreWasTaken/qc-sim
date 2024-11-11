@@ -1,5 +1,6 @@
 import json
 import art
+import sys
 
 def color_text(text, rgb):
     r, g, b = rgb

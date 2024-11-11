@@ -1,4 +1,4 @@
-#TODO: fix CopenhagenProbbilities? add unit tests.
+#TODO: fix CopenhagenProbbilities? And fix unit tests bc yes. (by making them a separate script)
 import numpy as np
 import copy
 from sim_dependencies import *
@@ -12,6 +12,10 @@ GLOBAL_HISTORY = []
 GLOBAL_STARTING_POINT = []
 QUBIT_NUMBER = 0
 FLAG_STARTING_POINT = True
+
+U_PRESENT = False
+V_PRESENT = False
+
 
 def read_json():
     with open('qc_sim_settings.json','r') as openfile:
@@ -28,6 +32,22 @@ for item in json_file.items():
         QUBIT_NUMBER = item[1]
     if item[0] == "FLAG_STARTING_POINT-dev":
         FLAG_STARTING_POINT = True if item[1] == "On" else False
+    if item[0] == "FLAG_UNITTEST-dev":
+        U_PRESENT = True if item[1] == "On" else False
+    if item[0] == "FLAG_UNITTEST_VERBOSE-dev":
+        V_PRESENT = True if item[1] == "On" else False
+
+
+if U_PRESENT and V_PRESENT:
+    import unit_tests as ut
+    suite = ut.unittest.TestLoader().loadTestsFromModule(ut)
+    ut.unittest.TextTestRunner(verbosity=2).run(suite)
+elif V_PRESENT:
+    print(f"{bcolors.FAIL}ERROR: Cannot apply verbose argument to no unit test argument!{bcolors.ENDC}")
+elif U_PRESENT:
+    import unit_tests as ut
+    suite = ut.unittest.TestLoader().loadTestsFromModule(ut)
+    ut.unittest.TextTestRunner().run(suite)
 
 def __Po2__(self,Ee: float) -> float:
     """Sub-version of _Po2 used for CopenhagenProbabilities"""
