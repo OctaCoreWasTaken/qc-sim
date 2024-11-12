@@ -30,6 +30,7 @@ QUBITS[0].Sigma(0.5) # Putting the qubit in a superposition.
 QUBITS[0].Omega(QUBITS[1]) # Entangling the two qubits via CNOT.
 QUBITS[0].Sigma(0.5) # Putting the qubit in a superposition again.
 QUBITS[0].Measure() # Measuring the qubit. Function also returns the collapsed value.
+
 p = CopenhagenProbabilities()
 print(p[0],p[1]) # Printing the copenhagen probabilities of the two qubits q0 and q1.
 ```
