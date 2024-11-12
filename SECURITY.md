@@ -17,7 +17,7 @@ Current not-released version is being supported with security updates.
 
 ## Reporting a Vulnerability
 
-If you find any vulnerabilities you should open a ticket with the prefix "Vulnerabilility - ".
+If you find any vulnerabilities you should open a ticket with the prefix "Vulnerability - ".
 If you do not use said prefix i might go over the vulnerability and it might not get fixed.
 You should expect updates on a reported vulnerability every day at best and at worst every week.
 If a vulnerability report is accepted then I will reply to the ticket saying I accepted it.
