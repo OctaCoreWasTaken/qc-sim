@@ -1,4 +1,5 @@
-#TODO: fix CopenhagenProbbilities
+# TODO: fix CopenhagenProbbilities and add shadows to text of logo and also add it
+# on the actual repo page.
 import numpy as np
 import copy
 from dependencies.sim_dependencies import *
