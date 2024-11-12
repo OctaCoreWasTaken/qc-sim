@@ -1,7 +1,7 @@
-#TODO: fix CopenhagenProbbilities?
+#TODO: fix CopenhagenProbbilities
 import numpy as np
 import copy
-from sim_dependencies import *
+from dependencies.sim_dependencies import *
 
 MEASUREMENT_MODE_EV = 0
 MEASUREMENT_MODE_BIN = 1

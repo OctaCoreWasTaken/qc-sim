@@ -1,4 +1,4 @@
-from dependencies.sim_dependencies import *
+from sim_dependencies import *
 import unittest
 import qc_sim
 import copy

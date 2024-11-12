@@ -4,7 +4,7 @@ from textual.widgets import Header, Footer, Button, Static, Input, Label
 from textual.validation import Function, Number, ValidationResult, Validator
 from textual.containers import ScrollableContainer
 from textual.screen import Screen
-from sim_dependencies import *
+from dependencies.sim_dependencies import *
 
 json_file = None
 ADMIN = False
@@ -96,7 +96,7 @@ class Config_App(App):
     BINDINGS = [("d","toggle_dark","Toggle dark mode"),("q","quit_button","Quit"),
                 ("s","save_button","Save config")]
 
-    CSS_PATH = "qcconfig.tcss"
+    CSS_PATH = "./dev/qcconfig.tcss"
 
     def compose(self) -> ComposeResult:
         global json_file
