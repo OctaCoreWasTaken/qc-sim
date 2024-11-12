@@ -6,7 +6,7 @@ Use this section to tell people about which versions of your project are
 currently being supported with security updates.
 Current not-released version is being supported with security updates. 
 
-[!NOTE]
+> [!NOTE]
 > Branches might not
 > be supported and therefore it is not recommended to use them unless it has been
 > publicly confirmed Use them at your own risk!
