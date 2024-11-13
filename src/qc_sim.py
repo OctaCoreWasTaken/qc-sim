@@ -1,7 +1,6 @@
-#TODO: fix CopenhagenProbbilities.
 import numpy as np
 import copy
-from sim_dependencies import *
+from dependencies.sim_dependencies import *
 
 MEASUREMENT_MODE_EV = 0
 MEASUREMENT_MODE_BIN = 1
@@ -13,11 +12,6 @@ GLOBAL_STARTING_POINT = []
 QUBIT_NUMBER = 0
 FLAG_STARTING_POINT = True
 
-def read_json():
-    with open('qc_sim_settings.json','r') as openfile:
-        json_file = json.load(openfile)
-    return json_file
-
 json_file = read_json()
 for item in json_file.items():
     if item[0] == "FLAG_WARNING":
@@ -28,6 +22,7 @@ for item in json_file.items():
         QUBIT_NUMBER = item[1]
     if item[0] == "FLAG_STARTING_POINT-dev":
         FLAG_STARTING_POINT = True if item[1] == "On" else False
+
 
 def __Po2__(self,Ee: float) -> float:
     """Sub-version of _Po2 used for CopenhagenProbabilities"""
@@ -62,7 +57,7 @@ def __Omega__(self,P2) -> None:
     collapse = np.random.choice([self.low_orbit_energy,self.high_orbit_energy],p=[1 - abs(po2),abs(po2)])
     P2.energy_level = collapse
 
-def CopenhagenProbabilities(mm: int = MEASUREMENT_MODE_EV,iterations: int = 100) -> np.ndarray:
+def CopenhagenProbabilities(mm: int = MEASUREMENT_MODE_BIN,iterations: int = 100) -> np.ndarray:
     """Simple to use function to compute regular probabilities for the given QC system like you can in the old regular
        QC algorithm. Not finished""" #TODO !!!
     global FLAG_RECORD_HISTORY
@@ -71,22 +66,24 @@ def CopenhagenProbabilities(mm: int = MEASUREMENT_MODE_EV,iterations: int = 100)
         eVs = []
         for i,qubit in enumerate(QUBITS):
             eVs.append(qubit.energy_level)
-            QUBITS[i].energy_level = GLOBAL_STARTING_POINT[i].energy_level
+            QUBITS[i].energy_level = copy.deepcopy(GLOBAL_STARTING_POINT[i].energy_level)
         low = np.array([0 for i in range(QUBIT_NUMBER)])
         high = np.array([0 for i in range(QUBIT_NUMBER)])
         for i in range(iterations):
             for action in GLOBAL_HISTORY:
-                if len(action) == 3:
+                if len(action) == 2:
+                    QUBITS[action[1]].energy_level = copy.deepcopy(action[0])
+                elif len(action) == 3:
                     action[0](action[1],action[2])
                 else:
                     action[0](action[1],QUBITS[action[2]])
             for i, q in enumerate(QUBITS):
                 if q.energy_level == q.low_orbit_energy:
                     low[i] += 1
-                    q.energy_level = GLOBAL_STARTING_POINT[i].energy_level
+                    q.energy_level = copy.deepcopy(GLOBAL_STARTING_POINT[i].energy_level)
                 else:
                     high[i] += 1
-                    q.energy_level = GLOBAL_STARTING_POINT[i].energy_level
+                    q.energy_level = copy.deepcopy(GLOBAL_STARTING_POINT[i].energy_level)
         low = low / float(iterations)
         high = high / float(iterations)
         qubit_low_orbitals = [q2.low_orbit_energy for q2 in QUBITS]
@@ -99,27 +96,23 @@ def CopenhagenProbabilities(mm: int = MEASUREMENT_MODE_EV,iterations: int = 100)
 class Qubit:
     """
        **Brief explanation of the system**
-
-       It is a model conceptualised from the ground up as a separate quantum computing system
-       to allow for a simple mathematical model to describe all useful phenomenons in the QC
-       field. Such as entanglement and superposition. Which all work without the need of huge
-       state vectors or matrices. This allows for greater speeds and performance to simulate
-       quantum systems thousands or even millions of times bigger than anything we have simulated
-       before with just a very tiny fraction of the computational power of previous algorithms.
-       
-       This is a project created by **OctaCore** in July 2024 - Present and is in active development (ofc)
-       This project is also a proof of concept and not a well developed technology (yet), however i do hope
-       it will be able to change the world for the better. As of the time of writing this there hasn't
-       been a paper that has been published on this subject."""
-    def __init__(self,index: int,mm: int = MEASUREMENT_MODE_EV) -> None:
+        
+        Simple algorithm for simulating a new type of a quantum computer meant to improve performance
+        and efficiency exponentially with the number of qubits.
+        
+        The algorithm describes a qubit as being an atom where we send
+        and amount of energy to it related to a given probability. This combined with some random
+        energy (temperature whenever we count multiple atoms) gives us a probability of wether it
+        will or not ionize. Giving us 2 stable states. On and off.
+        """
+    def __init__(self,index: int,mm: int = MEASUREMENT_MODE_EV,warning: bool = True) -> None:
         global FLAG_INITIALIZED
         self.index = index
         self.low_orbit_energy = -10 # eV
         self.energy_level = self.low_orbit_energy
         self.high_orbit_energy = -5 # eV      
         self.measurement_mode = mm
-        self.history = [] # TODO
-        if not FLAG_INITIALIZED and FLAG_WARNING:
+        if not FLAG_INITIALIZED and FLAG_WARNING and warning:
             print(f"{bcolors.WARNING + bcolors.BOLD}Warning!: Printing of any particle counts as measurement and will collapse any superpostion!{bcolors.ENDC}")
             # print(f"{bcolors.BOLD}Consider using the CopenhagenProbabilities method to compute and print the approximate probabilities!{bcolors.ENDC}")
             FLAG_INITIALIZED = True
@@ -163,12 +156,17 @@ class Qubit:
     def Measure(self) -> None:
         """Measures and collapses the value of the given qubit class."""
         global GLOBAL_HISTORY, GLOBAL_STARTING_POINT
-        if FLAG_RECORD_HISTORY: GLOBAL_HISTORY = [] 
-        if FLAG_STARTING_POINT: GLOBAL_STARTING_POINT = copy.deepcopy(QUBITS)
-        return self.energy_level if self.measurement_mode == MEASUREMENT_MODE_EV else (self.energy_level - self.low_orbit_energy) / (self.high_orbit_energy - self.low_orbit_energy)
+        GLOBAL_HISTORY.append([self.energy_level,self.index])
+        # if FLAG_RECORD_HISTORY: GLOBAL_HISTORY = [] 
+        # if FLAG_STARTING_POINT: GLOBAL_STARTING_POINT = copy.deepcopy(QUBITS)
+        return self.energy_level if self.measurement_mode == MEASUREMENT_MODE_EV else (self.energy_level - self.low_orbit_energy) / (self.high_orbit_energy - self.low_orbit_energy) 
+
+    def __m__(self) -> None:
+        """WARNING: DO NOT USE THIS FUNCTION. THIS IS DEVELOPMENT ONLY"""
+        return (self.energy_level - self.low_orbit_energy) / (self.high_orbit_energy - self.low_orbit_energy)
 
     def __str__(self) -> None:
         return bcolors.OKCYAN + str(self.Measure()) + bcolors.ENDC
 
-QUBITS = [Qubit(x,MEASUREMENT_MODE_BIN) for x in range(QUBIT_NUMBER)]
+QUBITS = [Qubit(x,MEASUREMENT_MODE_BIN,warning=False) for x in range(QUBIT_NUMBER)]
 GLOBAL_STARTING_POINT = copy.deepcopy(QUBITS)

@@ -1,5 +1,11 @@
 import json
 import art
+import sys
+
+def read_json():
+    with open('./dependencies/qc_sim_settings.json','r') as openfile:
+        json_file = json.load(openfile)
+    return json_file
 
 def color_text(text, rgb):
     r, g, b = rgb
