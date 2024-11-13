@@ -1,5 +1,5 @@
-<p align="center" style="width: 200px !important">
-  <img width="600" height="250" src="https://github.com/OctaCoreWasTaken/qc-sim/blob/octa/CopProb_fix/qc-sim_logo.png">
+<p align="center">
+  <img width="200" height="83" src="https://github.com/OctaCoreWasTaken/qc-sim/blob/octa/CopProb_fix/qc-sim_logo.png">
 </p>
 
 # Instalation
