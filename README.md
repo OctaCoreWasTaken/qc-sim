@@ -1,8 +1,10 @@
 <p align="center">
-  <img width="600" height="250" src="https://github.com/OctaCoreWasTaken/qc-sim/blob/octa/CopProb_fix/qc-sim_logo.png">
+  <figure>
+    <img width="600" height="250" src="https://github.com/OctaCoreWasTaken/qc-sim/blob/octa/CopProb_fix/qc-sim_logo.png">
+    <figcaption>_An algorithm designed to simulate quantum computers faster and more efficient._</figcaption>
+  </figure>
 </p>
 
-> _An algorithm designed to simulate quantum computers faster and more efficient._
 
 > [!NOTE]
 > The core algorithm may be wrong in certain situations. If you find any issues please open a ticket.
