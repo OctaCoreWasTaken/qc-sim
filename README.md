@@ -1,6 +1,6 @@
-
-<img align="center" width="600" height="250" src="https://github.com/OctaCoreWasTaken/qc-sim/blob/octa/CopProb_fix/qc-sim_logo.png">
-
+<p align="center>
+  <img width="600" height="250" src="https://github.com/OctaCoreWasTaken/qc-sim/blob/octa/CopProb_fix/qc-sim_logo.png">
+</p>
 
 > [!NOTE]
 > The core algorithm may be wrong in certain situations. If you find any issues please open a ticket.
