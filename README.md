@@ -1,5 +1,5 @@
-# qc-sim - Quantum Computer Simulator
-An algorithm designed to simulate quantum computers faster and more efficient.
+![alt text](https://github.com/OctaCoreWasTaken/qc-sim/blob/octa/CopProb_fix/qc-sim_logo.png)
+> _An algorithm designed to simulate quantum computers faster and more efficient._
 
 > [!NOTE]
 > The core algorithm may be wrong in certain situations. If you find any issues please open a ticket.
