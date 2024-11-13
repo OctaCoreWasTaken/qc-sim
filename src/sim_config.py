@@ -85,7 +85,7 @@ class AreYouSureScreen(Screen):
 
     def action_pop_screen_y(self) -> None:
         json_object = json.dumps(json_file,indent=4)
-        with open("qc_sim_settings.json","w") as outfile:
+        with open("./dependencies/qc_sim_settings.json","w") as outfile:
             outfile.write(json_object)
         app.pop_screen()
 

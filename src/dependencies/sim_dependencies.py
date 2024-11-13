@@ -3,7 +3,7 @@ import art
 import sys
 
 def read_json():
-    with open('./dependencies/qc_sim_settings.json','r') as openfile:
+    with open('../dependencies/qc_sim_settings.json','r') as openfile:
         json_file = json.load(openfile)
     return json_file
 

@@ -113,15 +113,15 @@ class Qubit:
         energy (temperature whenever we count multiple atoms) gives us a probability of wether it
         will or not ionize. Giving us 2 stable states. On and off.
         """
-    def __init__(self,index: int,mm: int = MEASUREMENT_MODE_EV,warning: bool = True) -> None:
+    def __init__(self,index: int,mm: int = MEASUREMENT_MODE_EV) -> None:
         global FLAG_INITIALIZED
         self.index = index
         self.low_orbit_energy = -10 # eV
         self.energy_level = self.low_orbit_energy
         self.high_orbit_energy = -5 # eV      
         self.measurement_mode = mm
-        if not FLAG_INITIALIZED and FLAG_WARNING and warning:
-            print(f"{bcolors.WARNING + bcolors.BOLD}Warning!: Printing of any particle counts as measurement and will collapse any superpostion!{bcolors.ENDC}")
+        if not FLAG_INITIALIZED and FLAG_WARNING:
+            print(f"{bcolors.WARNING + bcolors.BOLD}Warning!: Printing of any particle counts as measurement and will collapse any superpostion!\n{bcolors.ENDC}")
             # print(f"{bcolors.BOLD}Consider using the CopenhagenProbabilities method to compute and print the approximate probabilities!{bcolors.ENDC}")
             FLAG_INITIALIZED = True
     def _Po2(self,Ee: float) -> float:
@@ -176,5 +176,5 @@ class Qubit:
     def __str__(self) -> None:
         return bcolors.OKCYAN + str(self.Measure()) + bcolors.ENDC
 
-QUBITS = [Qubit(x,MEASUREMENT_MODE_BIN,warning=False) for x in range(QUBIT_NUMBER)]
+QUBITS = [Qubit(x,MEASUREMENT_MODE_BIN) for x in range(QUBIT_NUMBER)]
 GLOBAL_STARTING_POINT = copy.deepcopy(QUBITS)
