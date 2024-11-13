@@ -11,6 +11,9 @@ GLOBAL_HISTORY = []
 GLOBAL_STARTING_POINT = []
 QUBIT_NUMBER = 0
 FLAG_STARTING_POINT = True
+FLAG_QC_SIM = False
+# DONT FORGET TO UPDATE
+VERSION = "snapshot v0.0.7b" # Merge 7, variation b
 
 json_file = read_json()
 for item in json_file.items():
@@ -22,7 +25,12 @@ for item in json_file.items():
         QUBIT_NUMBER = item[1]
     if item[0] == "FLAG_STARTING_POINT-dev":
         FLAG_STARTING_POINT = True if item[1] == "On" else False
+    if item[0] == "FLAG_QC_SIM":
+        FLAG_QC_SIM = True if item[1] == "On" else False
 
+if FLAG_QC_SIM:
+    print(art.text2art("qc-sim") + " " * int(16 - len(VERSION) / 2) + f"-= {VERSION} =-")
+    print("-" * 39 + "\n")
 
 def __Po2__(self,Ee: float) -> float:
     """Sub-version of _Po2 used for CopenhagenProbabilities"""

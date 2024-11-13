@@ -2,5 +2,6 @@
     "FLAG_WARNING": "On",
     "FLAG_RECORD_HISTORY": "On",
     "FLAG_STARTING_POINT-dev": "On",
+    "FLAG_QC_SIM": "On",
     "QUBIT_NUMBER": 2
 }
