@@ -1,4 +1,4 @@
-![alt text](https://github.com/OctaCoreWasTaken/qc-sim/blob/octa/CopProb_fix/qc-sim_logo.png)
+> ![alt text](https://github.com/OctaCoreWasTaken/qc-sim/blob/octa/CopProb_fix/qc-sim_logo.png)
 > _An algorithm designed to simulate quantum computers faster and more efficient._
 
 > [!NOTE]
