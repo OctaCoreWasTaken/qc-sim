@@ -11,9 +11,9 @@ Current not-released version is being supported with security updates.
 > be supported and therefore it is not recommended to use them unless it has been
 > publicly confirmed Use them at your own risk!
 
-| Version | Supported          |
-| ------- | ------------------ |
-| main?   | :white_check_mark: |
+| Version           | Supported          |
+| ----------------- | ------------------ |
+| snapshot v0.0.7b  | :white_check_mark: |
 
 ## Reporting a Vulnerability
 
