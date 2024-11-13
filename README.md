@@ -1,6 +1,7 @@
 <p align="center">
   <img width="460" height="300" src="https://github.com/OctaCoreWasTaken/qc-sim/blob/octa/CopProb_fix/qc-sim_logo.png">
 </p>
+
 > _An algorithm designed to simulate quantum computers faster and more efficient._
 
 > [!NOTE]
