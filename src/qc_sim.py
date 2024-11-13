@@ -1,5 +1,3 @@
-# TODO: fix CopenhagenProbbilities and add shadows to text of logo and also add it
-# on the actual repo page.
 import numpy as np
 import copy
 from dependencies.sim_dependencies import *
@@ -59,7 +57,7 @@ def __Omega__(self,P2) -> None:
     collapse = np.random.choice([self.low_orbit_energy,self.high_orbit_energy],p=[1 - abs(po2),abs(po2)])
     P2.energy_level = collapse
 
-def CopenhagenProbabilities(mm: int = MEASUREMENT_MODE_EV,iterations: int = 100) -> np.ndarray:
+def CopenhagenProbabilities(mm: int = MEASUREMENT_MODE_BIN,iterations: int = 100) -> np.ndarray:
     """Simple to use function to compute regular probabilities for the given QC system like you can in the old regular
        QC algorithm. Not finished""" #TODO !!!
     global FLAG_RECORD_HISTORY
@@ -68,13 +66,13 @@ def CopenhagenProbabilities(mm: int = MEASUREMENT_MODE_EV,iterations: int = 100)
         eVs = []
         for i,qubit in enumerate(QUBITS):
             eVs.append(qubit.energy_level)
-            QUBITS[i].energy_level = GLOBAL_STARTING_POINT[i].energy_level
+            QUBITS[i].energy_level = copy.deepcopy(GLOBAL_STARTING_POINT[i].energy_level)
         low = np.array([0 for i in range(QUBIT_NUMBER)])
         high = np.array([0 for i in range(QUBIT_NUMBER)])
         for i in range(iterations):
             for action in GLOBAL_HISTORY:
                 if len(action) == 2:
-                    QUBITS[action[1]].energy_level = action[0]
+                    QUBITS[action[1]].energy_level = copy.deepcopy(action[0])
                 elif len(action) == 3:
                     action[0](action[1],action[2])
                 else:
@@ -82,10 +80,10 @@ def CopenhagenProbabilities(mm: int = MEASUREMENT_MODE_EV,iterations: int = 100)
             for i, q in enumerate(QUBITS):
                 if q.energy_level == q.low_orbit_energy:
                     low[i] += 1
-                    q.energy_level = GLOBAL_STARTING_POINT[i].energy_level
+                    q.energy_level = copy.deepcopy(GLOBAL_STARTING_POINT[i].energy_level)
                 else:
                     high[i] += 1
-                    q.energy_level = GLOBAL_STARTING_POINT[i].energy_level
+                    q.energy_level = copy.deepcopy(GLOBAL_STARTING_POINT[i].energy_level)
         low = low / float(iterations)
         high = high / float(iterations)
         qubit_low_orbitals = [q2.low_orbit_energy for q2 in QUBITS]
@@ -160,8 +158,12 @@ class Qubit:
         global GLOBAL_HISTORY, GLOBAL_STARTING_POINT
         GLOBAL_HISTORY.append([self.energy_level,self.index])
         # if FLAG_RECORD_HISTORY: GLOBAL_HISTORY = [] 
-        if FLAG_STARTING_POINT: GLOBAL_STARTING_POINT = copy.deepcopy(QUBITS)
+        # if FLAG_STARTING_POINT: GLOBAL_STARTING_POINT = copy.deepcopy(QUBITS)
         return self.energy_level if self.measurement_mode == MEASUREMENT_MODE_EV else (self.energy_level - self.low_orbit_energy) / (self.high_orbit_energy - self.low_orbit_energy) 
+
+    def __m__(self) -> None:
+        """WARNING: DO NOT USE THIS FUNCTION. THIS IS DEVELOPMENT ONLY"""
+        return (self.energy_level - self.low_orbit_energy) / (self.high_orbit_energy - self.low_orbit_energy)
 
     def __str__(self) -> None:
         return bcolors.OKCYAN + str(self.Measure()) + bcolors.ENDC
