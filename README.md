@@ -2,9 +2,6 @@
   <img width="600" height="250" src="https://github.com/OctaCoreWasTaken/qc-sim/blob/octa/CopProb_fix/qc-sim_logo.png">
 </p>
 
-> [!NOTE]
-> The core algorithm may be wrong in certain situations. If you find any issues please open a ticket.
-
 # Instalation
 To install the files of this project you can use `git clone https://github.com/OctaCoreWasTaken/qc-sim.git` in the terminal to clone
 the repository. Having `git` installed is a requirement.
@@ -53,3 +50,6 @@ Running `sim_config.py` with the argument `--admin` will trigger admin mode enab
 > [!WARNING]
 > Admin mode is only for development and so it is not recommended to use it.
 > Configuring the system wrong might lead to the simulator not working.
+
+> [!NOTE]
+> The core algorithm may be wrong in certain situations. If you find any issues please open a ticket.
