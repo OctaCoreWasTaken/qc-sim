@@ -2,8 +2,8 @@ import json
 import art
 import sys
 
-def read_json():
-    with open('../dependencies/qc_sim_settings.json','r') as openfile:
+def read_json(optional_dir: str = "") -> dict:
+    with open(optional_dir + 'dependencies/qc_sim_settings.json','r') as openfile:
         json_file = json.load(openfile)
     return json_file
 

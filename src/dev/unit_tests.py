@@ -1,16 +1,12 @@
 import sys
 import copy
 import json
+import dependencies.sim_dependencies as dep
 import unittest
-
-def read_json():
-    with open('../dependencies/qc_sim_settings.json','r') as openfile:
-        json_file = json.load(openfile)
-    return json_file
 
 fw = None
 
-json_file = read_json()
+json_file = dep.read_json("../")
 for item in json_file.items():
     if item[0] == "FLAG_WARNING":
         fw = item[1]
@@ -23,7 +19,7 @@ with open("../dependencies/qc_sim_settings.json","w") as outfile:
 sys.path.insert(0, '..')
 import qc_sim
 
-json_file = read_json()
+json_file = dep.read_json("../")
 for item in json_file.items():
     if item[0] == "FLAG_WARNING":
         json_file[item[0]] = fw
