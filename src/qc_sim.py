@@ -67,7 +67,7 @@ def __Omega__(self,P2) -> None:
 
 def CopenhagenProbabilities(mm: int = MEASUREMENT_MODE_BIN,iterations: int = 100) -> np.ndarray:
     """Simple to use function to compute regular probabilities for the given QC system like you can in the old regular
-       QC algorithm. Not finished""" #TODO !!!
+       QC algorithm."""
     global FLAG_RECORD_HISTORY
     if FLAG_RECORD_HISTORY:
         FLAG_RECORD_HISTORY = False
