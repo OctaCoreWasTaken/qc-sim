@@ -12,8 +12,9 @@ GLOBAL_STARTING_POINT = []
 QUBIT_NUMBER = 0
 FLAG_STARTING_POINT = True
 FLAG_QC_SIM = False
+FLAG_QC_CLASSIC_MODE = False
 # DONT FORGET TO UPDATE
-VERSION = "snapshot v0.0.7b" # Merge 7, variation b
+VERSION = "snapshot v0.0.7c" # Merge 7, variation b
 
 json_file = read_json()
 for item in json_file.items():
@@ -27,7 +28,9 @@ for item in json_file.items():
         FLAG_STARTING_POINT = True if item[1] == "On" else False
     if item[0] == "FLAG_QC_SIM":
         FLAG_QC_SIM = True if item[1] == "On" else False
-
+    if item[0] == "FLAG_QC_CLASSIC_MODE-dev":
+        FLAG_QC_CLASSIC_MODE = True if item[1] == "On" else False
+    
 if FLAG_QC_SIM:
     print(art.text2art("qc-sim") + " " * int(16 - len(VERSION) / 2) + f"-= {VERSION} =-")
     print("-" * 39 + "\n")
@@ -176,5 +179,44 @@ class Qubit:
     def __str__(self) -> None:
         return bcolors.OKCYAN + str(self.Measure()) + bcolors.ENDC
 
-QUBITS = [Qubit(x,MEASUREMENT_MODE_BIN) for x in range(QUBIT_NUMBER)]
+# WIP
+class Qubit_Classic:
+    def __init__(self, index: int):
+        """Work in progress!"""
+        self.index = index
+        self.polar = Qubit(0,MEASUREMENT_MODE_BIN)
+        self.azimuth = Qubit(0,MEASUREMENT_MODE_BIN)
+    def _prob(self):
+        angle_polar = self.polar.__m__() * np.pi
+        angle_azimuth = self.azimuth.__m__() * np.pi
+        phi = np.cos(angle_polar / 2) * np.array([[1],[0]]) + np.exp(1j * angle_azimuth) * np.sin(angle_polar / 2) * np.array([[0],[1]])
+        return phi
+    def X(self) -> None:
+        self.polar.Sigma(1)
+    def Y(self) -> None:
+        self.azimuth(0.5)
+        self.polar.Sigma(1)
+    def Z(self) -> None:
+        self.azimuth.Sigma(1)
+    def H(self) -> None:
+        self.X()
+        self.polar.Sigma(-0.5)
+    def S(self) -> None:
+        self.azimuth.Sigma(0.5)
+    def T(self) -> None:
+        self.azimuth.Sigma(0.25)
+    def CNOT(self, Q2_Classic) -> None:
+        prob = self.__m__()
+        Q2_Classic.polar.Sigma(prob)
+    def __m__(self) -> float:
+        return abs(self._prob()[1][0])**2
+    def Measure(self) -> float:
+        global GLOBAL_HISTORY, GLOBAL_STARTING_POINT
+        GLOBAL_HISTORY.append([self.__m__(),self.index])
+        return self.__m__()
+    
+if FLAG_QC_CLASSIC_MODE:
+    QUBITS = [Qubit_Classic(x) for x in range(QUBIT_NUMBER)]
+else:
+    QUBITS = [Qubit(x,MEASUREMENT_MODE_BIN) for x in range(QUBIT_NUMBER)]
 GLOBAL_STARTING_POINT = copy.deepcopy(QUBITS)
