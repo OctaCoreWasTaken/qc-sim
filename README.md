@@ -29,7 +29,8 @@ QUBITS[0].Omega(QUBITS[1]) # Entangling the two qubits via CNOT.
 QUBITS[0].Sigma(0.5) # Putting the qubit in a superposition again.
 QUBITS[0].Measure() # Measuring the qubit. Function also returns the collapsed value.
 
-p = MeasuringProbabilities.Legacy(auto_display = True, qubit_nr_focus = 2) # Computing the Copenhagen probabilities and displaying them on a bar graph
+p = MeasuringProbabilities.Legacy(auto_display = True, qubit_nr_focus = 2) # Computing the Copenhagen probabilities and displaying them on a bar graph.
+# qubit_nr_focus is the value which indicates which qubit probabilities are displayed. In this case, the 1st 2.
 ```
 Example printout of: `example.py`:
 ```
