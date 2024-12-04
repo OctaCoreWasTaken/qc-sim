@@ -1,4 +1,3 @@
-# TODO: Fix Qubit_Classic
 import numpy as np
 import copy
 from dependencies.sim_dependencies import *
@@ -16,7 +15,7 @@ FLAG_QC_SIM = False
 FLAG_QC_LEGACY_MODE = False
 FLAG_CONTINUE_ON_ERROR = False
 # DONT FORGET TO UPDATE
-VERSION = "snapshot v0.0.7c" # Merge 7, variation b
+VERSION = "snapshot v0.0.7e" # Merge 7, variation e
 
 json_file = read_json()
 for item in json_file.items():
@@ -39,11 +38,11 @@ if FLAG_QC_SIM:
     print(art.text2art("qc-sim") + " " * int(16 - len(VERSION) / 2) + f"-= {VERSION} =-")
     print("-" * 39 + "\n")
 
-###################################
-###                             ###
-### --- UNIVERSAL FUNCTIONS --- ###
-###                             ###
-###################################
+#########################
+###                   ###
+### --- UNIVERSAL --- ###
+###                   ###
+#########################
 
 def Error_msg(text):
     print(bcolors.FAIL + bcolors.BOLD + text + bcolors.ENDC)
@@ -54,6 +53,43 @@ def Warning_msg(text):
 def ContinueOnErrorWarning():
     if FLAG_CONTINUE_ON_ERROR: Warning_msg("WARNING: CONTINUE ON ERROR is on! The application will resume execution!")
     else: exit()
+
+class MeasuringProbabilities:
+    def Legacy(mm: int = MEASUREMENT_MODE_BIN,iterations: int = 100) -> np.ndarray:
+        """Simple to use function to compute regular copenhagen probabilities for the given QC system like you can in the old regular
+        QC algorithm."""
+        global FLAG_RECORD_HISTORY
+        if FLAG_RECORD_HISTORY:
+            FLAG_RECORD_HISTORY = False
+            eVs = []
+            for i,qubit in enumerate(QUBITS):
+                eVs.append(qubit.energy_level)
+                QUBITS[i].energy_level = copy.deepcopy(GLOBAL_STARTING_POINT[i].energy_level)
+            low = np.array([0 for i in range(QUBIT_NUMBER)])
+            high = np.array([0 for i in range(QUBIT_NUMBER)])
+            for i in range(iterations):
+                for action in GLOBAL_HISTORY:
+                    if len(action) == 2:
+                        QUBITS[action[1]].energy_level = copy.deepcopy(action[0])
+                    elif len(action) == 3:
+                        action[0](action[1],action[2])
+                    else:
+                        action[0](action[1],QUBITS[action[2]])
+                for i, q in enumerate(QUBITS):
+                    if q.energy_level == q.low_orbit_energy:
+                        low[i] += 1
+                        q.energy_level = copy.deepcopy(GLOBAL_STARTING_POINT[i].energy_level)
+                    else:
+                        high[i] += 1
+                        q.energy_level = copy.deepcopy(GLOBAL_STARTING_POINT[i].energy_level)
+            low = low / float(iterations)
+            high = high / float(iterations)
+            qubit_low_orbitals = [q2.low_orbit_energy for q2 in QUBITS]
+            qubit_high_orbitals = [q3.high_orbit_energy for q3 in QUBITS]
+            FLAG_RECORD_HISTORY = True
+            return np.add(np.multiply(low,qubit_low_orbitals),np.multiply(high,qubit_high_orbitals)) * 0.5 if mm == MEASUREMENT_MODE_EV else high
+        Error_msg("ERROR: MeasuringProbabilities.Legacy: Cannot compute Copenhagen Probabilities! Missing history! Consider enabling FLAG_RECORD_HISTORY!")
+        ContinueOnErrorWarning()
 
 ##############################
 ###                        ###
@@ -94,45 +130,9 @@ def __Omega__(self,P2) -> None:
     collapse = np.random.choice([self.low_orbit_energy,self.high_orbit_energy],p=[1 - abs(po2),abs(po2)])
     P2.energy_level = collapse
 
-def CopenhagenProbabilities(mm: int = MEASUREMENT_MODE_BIN,iterations: int = 100) -> np.ndarray:
-    """Simple to use function to compute regular probabilities for the given QC system like you can in the old regular
-       QC algorithm."""
-    global FLAG_RECORD_HISTORY
-    if FLAG_RECORD_HISTORY:
-        FLAG_RECORD_HISTORY = False
-        eVs = []
-        for i,qubit in enumerate(QUBITS):
-            eVs.append(qubit.energy_level)
-            QUBITS[i].energy_level = copy.deepcopy(GLOBAL_STARTING_POINT[i].energy_level)
-        low = np.array([0 for i in range(QUBIT_NUMBER)])
-        high = np.array([0 for i in range(QUBIT_NUMBER)])
-        for i in range(iterations):
-            for action in GLOBAL_HISTORY:
-                if len(action) == 2:
-                    QUBITS[action[1]].energy_level = copy.deepcopy(action[0])
-                elif len(action) == 3:
-                    action[0](action[1],action[2])
-                else:
-                    action[0](action[1],QUBITS[action[2]])
-            for i, q in enumerate(QUBITS):
-                if q.energy_level == q.low_orbit_energy:
-                    low[i] += 1
-                    q.energy_level = copy.deepcopy(GLOBAL_STARTING_POINT[i].energy_level)
-                else:
-                    high[i] += 1
-                    q.energy_level = copy.deepcopy(GLOBAL_STARTING_POINT[i].energy_level)
-        low = low / float(iterations)
-        high = high / float(iterations)
-        qubit_low_orbitals = [q2.low_orbit_energy for q2 in QUBITS]
-        qubit_high_orbitals = [q3.high_orbit_energy for q3 in QUBITS]
-        FLAG_RECORD_HISTORY = True
-        return np.add(np.multiply(low,qubit_low_orbitals),np.multiply(high,qubit_high_orbitals)) * 0.5 if mm == MEASUREMENT_MODE_EV else high
-    Error_msg("ERROR: Cannot compute Copenhagen Probabilities! Missing history! Consider enabling FLAG_RECORD_HISTORY!")
-    ContinueOnErrorWarning()
-
 class Qubit_Classic:
     """
-       **Brief explanation of the system**
+       **Brief explanation of the Classic / Legacy algorithm**
         
         Simple algorithm for simulating a new type of a quantum computer meant to improve performance
         and efficiency exponentially with the number of qubits.
@@ -151,7 +151,7 @@ class Qubit_Classic:
         self.measurement_mode = mm
         if not FLAG_INITIALIZED and FLAG_WARNING:
             Warning_msg("WARNING: Printing of any particle counts as measurement and will collapse any superpostion!\n")
-            Warning_msg("WARNING: ")
+            # Warning_msg("WARNING: ")
             # print(f"{bcolors.BOLD}Consider using the CopenhagenProbabilities method to compute and print the approximate probabilities!{bcolors.ENDC}")
             FLAG_INITIALIZED = True
 
