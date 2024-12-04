@@ -33,6 +33,21 @@ p = MeasuringProbabilities.Legacy() # Computing the Copenhagen probabilities
 print(f"q0: {round(p[0] * 1000) / 10}%|1>; q1: {round(p[1] * 1000) / 10}%|1>") 
 # ^^ Printing the copenhagen probabilities of the two qubits q0 and q1.
 ```
+Example printout of: `example.py`:
+```
+                          _            
+  __ _   ___         ___ (_) _ __ ___  
+ / _` | / __| _____ / __|| || '_ ` _ \ 
+| (_| || (__ |_____|\__ \| || | | | | |
+ \__, | \___|       |___/|_||_| |_| |_|
+    |_|                                
+            -= vX.X.XX =-
+---------------------------------------
+
+WARNING: Printing of any particle counts as measurement and will collapse any superpostion!
+
+q0: 100.0%|1>; q1: 54.0%|1>
+```
 
 ## Config
 Using `sim_config.py` you can easily configure different flags and settings of the quantum computer simulation such as the number of
