@@ -29,9 +29,7 @@ QUBITS[0].Omega(QUBITS[1]) # Entangling the two qubits via CNOT.
 QUBITS[0].Sigma(0.5) # Putting the qubit in a superposition again.
 QUBITS[0].Measure() # Measuring the qubit. Function also returns the collapsed value.
 
-p = MeasuringProbabilities.Legacy() # Computing the Copenhagen probabilities
-print(f"q0: {round(p[0] * 1000) / 10}%|1>; q1: {round(p[1] * 1000) / 10}%|1>") 
-# ^^ Printing the copenhagen probabilities of the two qubits q0 and q1.
+p = MeasuringProbabilities.Legacy(auto_display = True, qubit_nr_focus = 2) # Computing the Copenhagen probabilities and displaying them on a bar graph
 ```
 Example printout of: `example.py`:
 ```
@@ -41,12 +39,14 @@ Example printout of: `example.py`:
 | (_| || (__ |_____|\__ \| || | | | | |
  \__, | \___|       |___/|_||_| |_| |_|
     |_|                                
-            -= vX.X.XX =-
+        -= snapshot v0.0.7e =-
 ---------------------------------------
 
 WARNING: Printing of any particle counts as measurement and will collapse any superpostion!
 
-q0: 100.0%|1>; q1: 54.0%|1>
+─────── Copenhagen Probabilities - Legacy ────────
+|00> ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 100.00
+|01> ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 58.00
 ```
 
 ## Config

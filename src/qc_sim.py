@@ -1,6 +1,7 @@
 import numpy as np
 import copy
 from dependencies.sim_dependencies import *
+from dependencies.plot import *
 
 MEASUREMENT_MODE_EV = 0
 MEASUREMENT_MODE_BIN = 1
@@ -55,7 +56,7 @@ def ContinueOnErrorWarning():
     else: exit()
 
 class MeasuringProbabilities:
-    def Legacy(mm: int = MEASUREMENT_MODE_BIN,iterations: int = 100) -> np.ndarray:
+    def Legacy(mm: int = MEASUREMENT_MODE_BIN,iterations: int = 100,auto_display: bool = False, fancy_plot: bool = False, qubit_nr_focus: int = QUBIT_NUMBER) -> np.ndarray:
         """Simple to use function to compute regular copenhagen probabilities for the given QC system like you can in the old regular
         QC algorithm."""
         global FLAG_RECORD_HISTORY
@@ -87,7 +88,15 @@ class MeasuringProbabilities:
             qubit_low_orbitals = [q2.low_orbit_energy for q2 in QUBITS]
             qubit_high_orbitals = [q3.high_orbit_energy for q3 in QUBITS]
             FLAG_RECORD_HISTORY = True
-            return np.add(np.multiply(low,qubit_low_orbitals),np.multiply(high,qubit_high_orbitals)) * 0.5 if mm == MEASUREMENT_MODE_EV else high
+            if not auto_display:
+                return np.add(np.multiply(low,qubit_low_orbitals),np.multiply(high,qubit_high_orbitals)) * 0.5 if mm == MEASUREMENT_MODE_EV else high
+            category_names = [f"|{"0" * (len(str(bin(qubit_nr_focus))) - len(str(bin(x)))) + str(bin(x))[2:]}>" for x in range(qubit_nr_focus)]
+            plot_values = high[:qubit_nr_focus] * 100
+            # print(plot_values)
+            if fancy_plot: barplot_fancy(category_names,plot_values,"Copenhagen Probabilities - Legacy"); return
+            barplot(category_names,plot_values,"Copenhagen Probabilities - Legacy",width=50)
+            print("")
+            return
         Error_msg("ERROR: MeasuringProbabilities.Legacy: Cannot compute Copenhagen Probabilities! Missing history! Consider enabling FLAG_RECORD_HISTORY!")
         ContinueOnErrorWarning()
 
@@ -223,41 +232,41 @@ class Qubit_Classic:
 ######################################
 
 
-def prob(ket):
+def prob(ket: np.ndarray) -> float:
     return abs(ket[1])**2
 
-def ket_0():
+def ket_0() -> np.ndarray:
     return np.array([1,0])
 
-def ket_1():
+def ket_1() -> np.ndarray:
     return np.array([0,1])
 
 # PAULI-X
-def X(q):
+def X(q: np.ndarray) -> np.ndarray:
     return q @ np.array([[0,1],[1,0]])
 
 # PAULI-Y
-def Y(q):
+def Y(q: np.ndarray) -> np.ndarray:
     return q @ np.array([[0,-1j],[1j,0]])
 
 # PAULI-Z
-def Z(q):
+def Z(q: np.ndarray) -> np.ndarray:
     return q @ np.array([[1,0],[0,-1]])
 
 # HADAMARD
-def H(q):
+def H(q: np.ndarray) -> np.ndarray:
     return q @ (1/np.sqrt(2) * np.array([[1,1],[1,-1]]))
 
 # PHASE
-def S(q):
+def S(q: np.ndarray) -> np.ndarray:
     return q @ np.array([[1,0],[0,1j]])
 
 # π/8
-def T(q):
+def T(q: np.ndarray) -> np.ndarray:
     return q @ np.array([[1,0],[0,np.exp(1j * np.pi / 4)]])
 
 # CONTROLLED NOT
-def CNOT(q0,q1):
+def CNOT(q0: np.ndarray,q1: np.ndarray) -> np.ndarray:
     q0 = M(q0)
     q1 = M(q1)
     I = np.array([[1,0],[0,1]])
@@ -265,7 +274,7 @@ def CNOT(q0,q1):
     return q1 @ (prob(q0) * X + (1 - prob(q0)) * I)
 
 # MEASURE
-def M(q):
+def M(q: np.ndarray) -> np.ndarray:
     p = prob(q)
     if np.random.choice([0,1],p=[1-p,p]) == 0:
         return ket_0()
@@ -279,31 +288,31 @@ class Qubit:
         self.matrix = ket_0() # |0>
 
     # PAULI-X
-    def X(self):
+    def X(self) -> None:
         self.matrix = X(self.matrix)
 
     # PAULI-Y
-    def Y(self):
+    def Y(self) -> None:
         self.matrix = Y(self.matrix)
 
     # PAULI-Z
-    def Z(self):
+    def Z(self) -> None:
         self.matrix = Z(self.matrix)
 
     # HADAMARD
-    def H(self):
+    def H(self) -> None:
         self.matrix = H(self.matrix)
 
     # PHASE
-    def S(self):
+    def S(self) -> None:
         self.matrix = S(self.matrix)
 
     # π/8
-    def T(self):
+    def T(self) -> None:
         self.matrix = T(self.matrix)
 
     # CONTROLLED NOT
-    def CNOT(self,target):
+    def CNOT(self,target) -> None:
         if type(target) == Qubit:
             self.matrix = CNOT(self.matrix,target.matrix)
             return
@@ -311,7 +320,7 @@ class Qubit:
         ContinueOnErrorWarning()
 
     # MEASURE
-    def __m__(self):
+    def __m__(self) -> None:
         self.matrix = M(self.matrix)
 
 
