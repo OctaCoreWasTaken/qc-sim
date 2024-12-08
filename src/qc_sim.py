@@ -8,6 +8,7 @@ MEASUREMENT_MODE_BIN = 1
 FLAG_WARNING = False
 FLAG_INITIALIZED = False
 FLAG_RECORD_HISTORY = False
+GLOBAL_HISTORY_TYPE = ""
 GLOBAL_HISTORY = []
 GLOBAL_STARTING_POINT = []
 QUBIT_NUMBER = 0
@@ -16,7 +17,7 @@ FLAG_QC_SIM = False
 FLAG_QC_LEGACY_MODE = False
 FLAG_CONTINUE_ON_ERROR = False
 # DONT FORGET TO UPDATE
-VERSION = "snapshot v0.0.7e" # Merge 7, variation e
+VERSION = "snapshot v0.0.7g" # Merge 7, variation g
 
 json_file = read_json()
 for item in json_file.items():
@@ -36,7 +37,7 @@ for item in json_file.items():
         FLAG_CONTINUE_ON_ERROR == True if item[1] == "On" else False
     
 if FLAG_QC_SIM:
-    print(art.text2art("qc-sim") + " " * int(16 - len(VERSION) / 2) + f"-= {VERSION} =-")
+    print(art.text2art("qc-sim") + " " * (round(16 - len(VERSION) / 2) + 1) + f"-= {VERSION} =-")
     print("-" * 39 + "\n")
 
 #########################
@@ -56,11 +57,14 @@ def ContinueOnErrorWarning():
     else: exit()
 
 class MeasuringProbabilities:
-    def Legacy(mm: int = MEASUREMENT_MODE_BIN,iterations: int = 100,auto_display: bool = False, fancy_plot: bool = False, qubit_nr_focus: int = QUBIT_NUMBER) -> np.ndarray:
+    def Legacy(mm: int = MEASUREMENT_MODE_BIN,iterations: int = 100,auto_display: bool = False, fancy_plot: bool = False, qubit_nr_focus: int = QUBIT_NUMBER):
         """Simple to use function to compute regular copenhagen probabilities for the given QC system like you can in the old regular
         QC algorithm."""
         global FLAG_RECORD_HISTORY
         if FLAG_RECORD_HISTORY:
+            if GLOBAL_HISTORY_TYPE != "Legacy":
+                Error_msg("ERROR: MeasuringProbabilities.Legacy: Wrong history type!")
+                ContinueOnErrorWarning()
             FLAG_RECORD_HISTORY = False
             eVs = []
             for i,qubit in enumerate(QUBITS):
@@ -97,8 +101,55 @@ class MeasuringProbabilities:
             barplot(category_names,plot_values,"Copenhagen Probabilities - Legacy",width=50)
             print("")
             return
-        Error_msg("ERROR: MeasuringProbabilities.Legacy: Cannot compute Copenhagen Probabilities! Missing history! Consider enabling FLAG_RECORD_HISTORY!")
+        Error_msg("ERROR: MeasuringProbabilities.Legacy: Cannot compute Copenhagen probabilities! Missing history! Consider enabling FLAG_RECORD_HISTORY!")
         ContinueOnErrorWarning()
+    def CopenhagenStyle(iterations: int = 100, auto_display: bool = False, fancy_plot: bool = False, focus_on_qubits_idx: list = range(QUBIT_NUMBER)):
+        # TODO: redo whatever the fuck this is
+        global FLAG_RECORD_HISTORY
+        if FLAG_RECORD_HISTORY:
+            if GLOBAL_HISTORY_TYPE != "Copenhagen-style":
+                Error_msg("ERROR: MeasuringProbabilities.CopenhagenStyle: Wrong history type!")
+                ContinueOnErrorWarning()
+            FLAG_RECORD_HISTORY = False
+            starting_point = GLOBAL_STARTING_POINT
+            fake_qubits = copy.deepcopy(starting_point)
+            iterations = 100_000
+            qubits_on_focus = focus_on_qubits_idx
+            high = [0 for i in range(2**len(qubits_on_focus))]
+            max_len = len(str(bin(2**len(qubits_on_focus) - 1))) - 2
+            for iteration in range(iterations):
+                for action in GLOBAL_HISTORY:
+                    if len(action) == 2:
+                        fake_qubits[action[1]].matrix = action[0](fake_qubits[action[1]].matrix)
+                    if len(action) == 3:
+                        fake_qubits[action[1]].__m__()
+                        fake_qubits[action[2]].__m__()
+                        fake_qubits[action[2]].matrix = action[0](fake_qubits[action[1]].matrix,fake_qubits[action[2]].matrix)
+                for i in range(QUBIT_NUMBER):
+                    fake_qubits[i].__m__()
+                for case in range(2**len(qubits_on_focus)):
+                    case_string = "0" * (max_len - len(str(bin(case))[2:])) + str(bin(case))[2:]
+                    result_and = True
+                    for j, qubit_idx in enumerate(qubits_on_focus):
+                        result_and = result_and and (int(fake_qubits[qubit_idx].Probability()) == int(case_string[j]))
+                    if result_and: high[case] += 1
+                for i in range(QUBIT_NUMBER):
+                    fake_qubits[i].matrix = copy.deepcopy(starting_point[i].matrix)
+                
+            high = np.array(high)
+            high = high / iteration
+            FLAG_RECORD_HISTORY = True
+            if not auto_display:
+                return high
+            category_names = [f"|{"0" * (max_len - len(str(bin(i))) + 2) + str(bin(i))[2:]}>" for i in range(2**len(focus_on_qubits_idx))]
+            plot_values = high * 100
+            if not fancy_plot: barplot(category_names,plot_values,"Copenhagen Probabilities - Current",50); return
+            barplot_fancy(category_names,plot_values,"Copenhagen Probabilities - Current")
+            return
+        Error_msg("ERROR: MeasuringProbabilities.CopenhagenStyle: Cannot compute Copenhagen probabilities! Missing history! Consider enabling FLAG_RECORD_HISTORY!")
+        ContinueOnErrorWarning()
+
+
 
 ##############################
 ###                        ###
@@ -225,11 +276,11 @@ class Qubit_Classic:
     def __str__(self) -> None:
         return bcolors.OKCYAN + str(self.Measure()) + bcolors.ENDC
 
-######################################
-###                                ###
-### --- CURRENT / REAL VERSION --- ###
-###                                ###
-######################################
+################################
+###                          ###
+### --- COPENHAGEN-STYLE --- ###
+###                          ###
+################################
 
 
 def prob(ket: np.ndarray) -> float:
@@ -267,8 +318,8 @@ def T(q: np.ndarray) -> np.ndarray:
 
 # CONTROLLED NOT
 def CNOT(q0: np.ndarray,q1: np.ndarray) -> np.ndarray:
-    q0 = M(q0)
-    q1 = M(q1)
+    # q0 = M(q0)
+    # q1 = M(q1)
     I = np.array([[1,0],[0,1]])
     X = np.array([[0,1],[1,0]])
     return q1 @ (prob(q0) * X + (1 - prob(q0)) * I)
@@ -290,42 +341,63 @@ class Qubit:
     # PAULI-X
     def X(self) -> None:
         self.matrix = X(self.matrix)
+        if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([X,self.index])
 
     # PAULI-Y
     def Y(self) -> None:
         self.matrix = Y(self.matrix)
+        if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([Y,self.index])
 
     # PAULI-Z
     def Z(self) -> None:
         self.matrix = Z(self.matrix)
+        if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([Z,self.index])
 
     # HADAMARD
     def H(self) -> None:
         self.matrix = H(self.matrix)
+        if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([H,self.index])
 
     # PHASE
     def S(self) -> None:
         self.matrix = S(self.matrix)
+        if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([S,self.index])
 
     # π/8
     def T(self) -> None:
         self.matrix = T(self.matrix)
+        if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([T,self.index])
 
     # CONTROLLED NOT
     def CNOT(self,target) -> None:
         if type(target) == Qubit:
+            self.matrix = M(self.matrix)
+            target.matrix = M(target.matrix)
             self.matrix = CNOT(self.matrix,target.matrix)
+            if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([CNOT,self.index,target.index])
             return
         Error_msg("ERROR: Qubit.CNOT: target is not a Qubit class!")
         ContinueOnErrorWarning()
 
+    # PROBABILITY
+    def Probability(self) -> float:
+        """WARNING: This function returns a collapsing probability
+           which does **NOT** take entanglement into account!"""
+        return prob(self.matrix)
+
     # MEASURE
     def __m__(self) -> None:
-        self.matrix = M(self.matrix)
-
+        self.matrix = copy.deepcopy(M(self.matrix))
+    
+    # MEASURE
+    def M(self) -> None:
+        self.__m__()
+        if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([M,self.index])
 
 if FLAG_QC_LEGACY_MODE:
     QUBITS = [Qubit_Classic(x,MEASUREMENT_MODE_BIN) for x in range(QUBIT_NUMBER)]
+    GLOBAL_HISTORY_TYPE = "Legacy"
 else:
     QUBITS = [Qubit(x) for x in range(QUBIT_NUMBER)]
+    GLOBAL_HISTORY_TYPE = "Copenhagen-style"
 GLOBAL_STARTING_POINT = copy.deepcopy(QUBITS)
