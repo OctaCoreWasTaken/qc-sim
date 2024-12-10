@@ -95,11 +95,12 @@ Example printout of `example_cphstyle.py`:
 
 WARNING: Printing of any qubit class counts as measurement and will collapse any superpostion!
 
-─────── Copenhagen Probabilities - Current ───────
-|00> ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 72.59
-|01> ▇▇▇▇▇▇▇ 12.56
-|10> ▇ 2.17
-|11> ▇▇▇▇▇▇▇ 12.68
+────── Copenhagen Probabilities - Cph-Style ──────                                                                                       
+|00> ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 72.54
+|01> ▇▇▇▇▇▇▇ 12.76
+|10> ▇ 2.07
+|11> ▇▇▇▇▇▇▇ 12.64
+
 ```
 
 ## Config

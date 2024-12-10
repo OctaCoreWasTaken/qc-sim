@@ -150,7 +150,7 @@ class MeasuringProbabilities:
                 return high
             category_names = [f"|{"0" * (max_len - len(str(bin(i))) + 2) + str(bin(i))[2:]}>" for i in range(2**len(focus_on_qubits_idx))]
             plot_values = high * 100
-            if not fancy_plot: barplot(category_names,plot_values,"Copenhagen Probabilities - Current",50); print(""); return
+            if not fancy_plot: barplot(category_names,plot_values,"Copenhagen Probabilities - Cph-Style",50); print(""); return
             barplot_fancy(category_names,plot_values,"Copenhagen Probabilities - CphStyle")
             return
         Error_msg("ERROR: MeasuringProbabilities.CopenhagenStyle: Cannot compute Copenhagen probabilities! Missing history! Consider enabling FLAG_RECORD_HISTORY!")
