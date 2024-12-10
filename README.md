@@ -45,7 +45,7 @@ Example printout of: `example_legacy.py`:
              = vX.X.Xx =-
 ---------------------------------------
 
-WARNING: Printing of any particle counts as measurement and will collapse any superpostion!
+WARNING: Printing of any qubit class counts as measurement and will collapse any superpostion!
 
 ─────── Copenhagen Probabilities - Legacy ────────
 |00> ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 100.00
@@ -93,7 +93,7 @@ Example printout of `example_cphstyle.py`:
             -= vX.X.Xx =-
 ---------------------------------------
 
-WARNING: Printing of any qubit... class counts as measurement and will collapse any superpostion!
+WARNING: Printing of any qubit class counts as measurement and will collapse any superpostion!
 
 ─────── Copenhagen Probabilities - Current ───────
 |00> ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 72.59
