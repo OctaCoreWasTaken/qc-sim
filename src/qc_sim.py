@@ -18,6 +18,7 @@ FLAG_QC_LEGACY_MODE = False
 FLAG_CONTINUE_ON_ERROR = False
 # DONT FORGET TO UPDATE
 VERSION = "snapshot v0.0.7g" # Merge 7, variation g
+FLAG_RELEASE = False
 
 json_file = read_json()
 for item in json_file.items():
@@ -143,8 +144,8 @@ class MeasuringProbabilities:
                 return high
             category_names = [f"|{"0" * (max_len - len(str(bin(i))) + 2) + str(bin(i))[2:]}>" for i in range(2**len(focus_on_qubits_idx))]
             plot_values = high * 100
-            if not fancy_plot: barplot(category_names,plot_values,"Copenhagen Probabilities - Current",50); return
-            barplot_fancy(category_names,plot_values,"Copenhagen Probabilities - Current")
+            if not fancy_plot: barplot(category_names,plot_values,"Copenhagen Probabilities - Current",50); print(""); return
+            barplot_fancy(category_names,plot_values,"Copenhagen Probabilities - CphStyle")
             return
         Error_msg("ERROR: MeasuringProbabilities.CopenhagenStyle: Cannot compute Copenhagen probabilities! Missing history! Consider enabling FLAG_RECORD_HISTORY!")
         ContinueOnErrorWarning()
@@ -209,11 +210,6 @@ class Qubit_Classic:
         self.energy_level = self.low_orbit_energy
         self.high_orbit_energy = -5 # eV      
         self.measurement_mode = mm
-        if not FLAG_INITIALIZED and FLAG_WARNING:
-            Warning_msg("WARNING: Printing of any particle counts as measurement and will collapse any superpostion!\n")
-            # Warning_msg("WARNING: ")
-            # print(f"{bcolors.BOLD}Consider using the CopenhagenProbabilities method to compute and print the approximate probabilities!{bcolors.ENDC}")
-            FLAG_INITIALIZED = True
 
     def _Po2(self,Ee: float) -> float:
         """Computes the probability of any given energy state, especially inbetween. Unrealistic.
@@ -393,6 +389,12 @@ class Qubit:
     def M(self) -> None:
         self.__m__()
         if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([M,self.index])
+
+if not FLAG_INITIALIZED and FLAG_WARNING:
+    Warning_msg("WARNING: Printing of any qubit... class counts as measurement and will collapse any superpostion!")
+    if not FLAG_RELEASE: Warning_msg("WARNING: The current version of qc-sim is not a release! Any new feature might include bugs!")
+    print("")
+    FLAG_INITIALIZED = True
 
 if FLAG_QC_LEGACY_MODE:
     QUBITS = [Qubit_Classic(x,MEASUREMENT_MODE_BIN) for x in range(QUBIT_NUMBER)]
