@@ -9,7 +9,7 @@ Current not-released version is being supported with security updates.
 > [!NOTE]
 > Branches might not
 > be supported and therefore it is not recommended to use them unless it has been
-> publicly confirmed Use them at your own risk!
+> publicly confirmed. Use them at your own risk!
 
 | Version           | Supported          |
 | ----------------- | ------------------ |
