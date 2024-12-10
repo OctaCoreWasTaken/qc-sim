@@ -42,7 +42,7 @@ Example printout of: `example_legacy.py`:
 | (_| || (__ |_____|\__ \| || | | | | |
  \__, | \___|       |___/|_||_| |_| |_|
     |_|                                
-             = vX.X.Xx =-
+            -= vX.X.Xx =-
 ---------------------------------------
 
 WARNING: Printing of any qubit class counts as measurement and will collapse any superpostion!
