@@ -19,7 +19,7 @@ FLAG_QC_LEGACY_MODE = False
 FLAG_CONTINUE_ON_ERROR = False
 # DONT FORGET TO UPDATE
 VERSION = "snapshot v0.0.8a" # Merge 8, variation a
-FLAG_RELEASE = False
+FLAG_RELEASE = True
 
 json_file = read_json()
 for item in json_file.items():
