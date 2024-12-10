@@ -114,7 +114,7 @@ qubits.
 > If you are not using `CopenhagenProbabilities` disabling the `FLAG_RECORD_HISTORY` flag will allow the program to run faster and
 > take up less space. More useful the more gates you use.
 
-Running `sim_config.py` with the argument `--admin` will trigger admin mode enabling access to a few more settings followed by the prefix `-dev`.
+Running `sim_config.py` with the argument `--admin` will trigger admin mode enabling access to a few more settings followed by the prefix **`-dev`**.
 
 > [!WARNING]
 > Admin mode is only for development and so it is not recommended to use it.
