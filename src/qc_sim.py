@@ -98,7 +98,7 @@ class MeasuringProbabilities:
             FLAG_RECORD_HISTORY = True
             if not auto_display:
                 return np.add(np.multiply(low,qubit_low_orbitals),np.multiply(high,qubit_high_orbitals)) * 0.5 if mm == MEASUREMENT_MODE_EV else high
-            category_names = [f"|{"0" * (len(str(bin(qubit_nr_focus))) - len(str(bin(x)))) + str(bin(x))[2:]}>" for x in range(qubit_nr_focus)]
+            category_names = [f"|{"0" * (len(str(bin(qubit_nr_focus - 1))) - len(str(bin(x)))) + str(bin(x))[2:]}>" for x in range(qubit_nr_focus)]
             plot_values = high[:qubit_nr_focus] * 100
             # print(plot_values)
             if fancy_plot: barplot_fancy(category_names,plot_values,"Copenhagen Probabilities - Legacy"); return

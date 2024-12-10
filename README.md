@@ -48,8 +48,8 @@ Example printout of: `example_legacy.py`:
 WARNING: Printing of any qubit class counts as measurement and will collapse any superpostion!
 
 ─────── Copenhagen Probabilities - Legacy ────────
-|00> ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 100.00
-|01> ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 58.00
+|0> ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 100.00
+|1> ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 58.00
 ```
 
 ## Copenhagen-Style version
