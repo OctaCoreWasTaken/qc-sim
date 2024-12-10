@@ -2,6 +2,7 @@ import numpy as np
 import copy
 from dependencies.sim_dependencies import *
 from dependencies.plot import *
+from tqdm import tqdm
 
 MEASUREMENT_MODE_EV = 0
 MEASUREMENT_MODE_BIN = 1
@@ -59,8 +60,10 @@ def ContinueOnErrorWarning():
 
 class MeasuringProbabilities:
     def Legacy(mm: int = MEASUREMENT_MODE_BIN,iterations: int = 100,auto_display: bool = False, fancy_plot: bool = False, qubit_nr_focus: int = QUBIT_NUMBER):
-        """Simple to use function to compute regular copenhagen probabilities for the given QC system like you can in the old regular
-        QC algorithm."""
+        """Simple to use function to compute probabilities of relationships between qubits (entanglement)
+           or the collapsing probability of a single qubit in a given circuit. And to display in a 
+           convenient way its results.
+           """
         global FLAG_RECORD_HISTORY
         if FLAG_RECORD_HISTORY:
             if GLOBAL_HISTORY_TYPE != "Legacy":
@@ -73,7 +76,7 @@ class MeasuringProbabilities:
                 QUBITS[i].energy_level = copy.deepcopy(GLOBAL_STARTING_POINT[i].energy_level)
             low = np.array([0 for i in range(QUBIT_NUMBER)])
             high = np.array([0 for i in range(QUBIT_NUMBER)])
-            for i in range(iterations):
+            for i in tqdm(range(iterations),leave=False):
                 for action in GLOBAL_HISTORY:
                     if len(action) == 2:
                         QUBITS[action[1]].energy_level = copy.deepcopy(action[0])
@@ -105,7 +108,11 @@ class MeasuringProbabilities:
         Error_msg("ERROR: MeasuringProbabilities.Legacy: Cannot compute Copenhagen probabilities! Missing history! Consider enabling FLAG_RECORD_HISTORY!")
         ContinueOnErrorWarning()
     def CopenhagenStyle(iterations: int = 100, auto_display: bool = False, fancy_plot: bool = False, focus_on_qubits_idx: list = range(QUBIT_NUMBER)):
-        # TODO: redo whatever the fuck this is
+        """
+            Simple to use function to compute the probabilities of a relationship between 2 or more qubits (entanglement)
+            or to compute the collapsing probabilities of a qubit in a given circuit. And to display the results in a
+            convenient matter.
+        """
         global FLAG_RECORD_HISTORY
         if FLAG_RECORD_HISTORY:
             if GLOBAL_HISTORY_TYPE != "Copenhagen-style":
@@ -114,11 +121,10 @@ class MeasuringProbabilities:
             FLAG_RECORD_HISTORY = False
             starting_point = GLOBAL_STARTING_POINT
             fake_qubits = copy.deepcopy(starting_point)
-            iterations = 100_000
             qubits_on_focus = focus_on_qubits_idx
             high = [0 for i in range(2**len(qubits_on_focus))]
             max_len = len(str(bin(2**len(qubits_on_focus) - 1))) - 2
-            for iteration in range(iterations):
+            for iteration in tqdm(range(iterations),leave=False):
                 for action in GLOBAL_HISTORY:
                     if len(action) == 2:
                         fake_qubits[action[1]].matrix = action[0](fake_qubits[action[1]].matrix)
@@ -202,6 +208,8 @@ class Qubit_Classic:
         and amount of energy to it related to a given probability. This combined with some random
         energy (temperature whenever we count multiple atoms) gives us a probability of whether it
         will or not ionize. Giving us 2 stable states. On and off.
+
+        Licensed under MPL-2.0 - OctaCore 2024
         """
     def __init__(self,index: int,mm: int = MEASUREMENT_MODE_EV) -> None:
         global FLAG_INITIALIZED
@@ -230,7 +238,7 @@ class Qubit_Classic:
         s = -1 if self.energy_level > self.low_orbit_energy else 1
         Ee = self.energy_level + P * (self.high_orbit_energy - self.low_orbit_energy) * s
         po2 = self._Po2(Ee)
-        collapse = np.random.choice([self.low_orbit_energy,self.high_orbit_energy],p=[1 - abs(po2),abs(po2)])
+        collapse = np.random.default_rng().choice([self.low_orbit_energy,self.high_orbit_energy],p=[1 - abs(po2),abs(po2)])
         self.energy_level = collapse
         if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([__Sigma__,self,P])
 
@@ -239,7 +247,7 @@ class Qubit_Classic:
         if type(Q2) == Qubit_Classic:
             Ee2 = ((self.energy_level - self.low_orbit_energy) / (self.high_orbit_energy - self.low_orbit_energy)) * Q2._Sigma(1)
             po2 = self._Po2(Ee2)
-            collapse = np.random.choice([self.low_orbit_energy,self.high_orbit_energy],p=[1 - abs(po2),abs(po2)])
+            collapse = np.random.default_rng().choice([self.low_orbit_energy,self.high_orbit_energy],p=[1 - abs(po2),abs(po2)])
             Q2.energy_level = collapse
             if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([__Omega__,self,Q2.index,None])
             return
@@ -253,7 +261,7 @@ class Qubit_Classic:
         s = 1 if self.energy_level > self.low_orbit_energy else -1
         Ee = self.energy_level + P * (self.high_orbit_energy - self.low_orbit_energy) * s
         po2 = self._Po2(Ee)
-        collapse = np.random.choice([self.low_orbit_energy,self.high_orbit_energy],p=[1 - abs(po2),abs(po2)])
+        collapse = np.random.default_rng().choice([self.low_orbit_energy,self.high_orbit_energy],p=[1 - abs(po2),abs(po2)])
         self.energy_level = collapse
         if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([__Gamma__,self,P])
 
@@ -280,92 +288,112 @@ class Qubit_Classic:
 
 
 def prob(ket: np.ndarray) -> float:
+    """Individual probability of the qubit"""
     return abs(ket[1])**2
 
 def ket_0() -> np.ndarray:
+    """Returns |0>"""
     return np.array([1,0])
 
 def ket_1() -> np.ndarray:
+    """Returns |1>"""
     return np.array([0,1])
 
 # PAULI-X
 def X(q: np.ndarray) -> np.ndarray:
+    """Pauli-X gate"""
     return q @ np.array([[0,1],[1,0]])
 
 # PAULI-Y
 def Y(q: np.ndarray) -> np.ndarray:
+    """Pauli-Y gate"""
     return q @ np.array([[0,-1j],[1j,0]])
 
 # PAULI-Z
 def Z(q: np.ndarray) -> np.ndarray:
+    """Pauli-Z gate"""
     return q @ np.array([[1,0],[0,-1]])
 
 # HADAMARD
 def H(q: np.ndarray) -> np.ndarray:
+    """Hademard gate"""
     return q @ (1/np.sqrt(2) * np.array([[1,1],[1,-1]]))
 
 # PHASE
 def S(q: np.ndarray) -> np.ndarray:
+    """Phase gate"""
     return q @ np.array([[1,0],[0,1j]])
 
 # π/8
 def T(q: np.ndarray) -> np.ndarray:
+    """π/8 gate"""
     return q @ np.array([[1,0],[0,np.exp(1j * np.pi / 4)]])
 
 # CONTROLLED NOT
 def CNOT(q0: np.ndarray,q1: np.ndarray) -> np.ndarray:
-    # q0 = M(q0)
-    # q1 = M(q1)
+    """CNOT gate"""
     I = np.array([[1,0],[0,1]])
     X = np.array([[0,1],[1,0]])
     return q1 @ (prob(q0) * X + (1 - prob(q0)) * I)
 
 # MEASURE
 def M(q: np.ndarray) -> np.ndarray:
+    """Measurement gate"""
     p = prob(q)
-    if np.random.choice([0,1],p=[1-p,p]) == 0:
+    if np.random.default_rng().choice([0,1],p=[1-p,p]) == 0:
         return ket_0()
     return ket_1()
 
-# WIP
+
 class Qubit:
+    """
+       Simple and elegant solution for simulating classic quantum computers faster
+       
+       Licensed under MPL-2.0 - OctaCore 2024
+       """
     def __init__(self, index: int):
-        """Work in progress!"""
         self.index = index
         self.matrix = ket_0() # |0>
 
     # PAULI-X
     def X(self) -> None:
+        """Pauli-X gate"""
         self.matrix = X(self.matrix)
         if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([X,self.index])
 
     # PAULI-Y
     def Y(self) -> None:
+        """Pauli-Y gate"""
         self.matrix = Y(self.matrix)
         if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([Y,self.index])
 
     # PAULI-Z
     def Z(self) -> None:
+        """Pauli-Z gate"""
         self.matrix = Z(self.matrix)
         if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([Z,self.index])
 
     # HADAMARD
     def H(self) -> None:
+        """Hademard gate"""
         self.matrix = H(self.matrix)
         if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([H,self.index])
 
     # PHASE
     def S(self) -> None:
+        """Phase gate"""
         self.matrix = S(self.matrix)
         if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([S,self.index])
 
     # π/8
     def T(self) -> None:
+        """π/8 gate"""
         self.matrix = T(self.matrix)
         if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([T,self.index])
 
     # CONTROLLED NOT
     def CNOT(self,target) -> None:
+        """CNOT gate"""
         if type(target) == Qubit:
             self.matrix = M(self.matrix)
             target.matrix = M(target.matrix)
@@ -381,14 +409,22 @@ class Qubit:
            which does **NOT** take entanglement into account!"""
         return prob(self.matrix)
 
-    # MEASURE
+    # MEASURE (internal)
     def __m__(self) -> None:
+        """WARNING: This function is for development use only!"""
         self.matrix = copy.deepcopy(M(self.matrix))
     
-    # MEASURE
+    # MEASURE (external)
     def M(self) -> None:
+        """Measurement gate"""
         self.__m__()
         if FLAG_RECORD_HISTORY: GLOBAL_HISTORY.append([M,self.index])
+        return self.matrix
+
+    # MEASURE AND PRINT
+    def __str__(self) -> None:
+        self.M()
+        return bcolors.OKCYAN + str(self.Probability()) + bcolors.ENDC
 
 if not FLAG_INITIALIZED and FLAG_WARNING:
     Warning_msg("WARNING: Printing of any qubit... class counts as measurement and will collapse any superpostion!")
