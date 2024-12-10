@@ -1,7 +1,7 @@
 from textual import on
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer, Button, Static, Input, Label
-from textual.validation import Function, Number, ValidationResult, Validator
+from textual.validation import Function, Number
 from textual.containers import ScrollableContainer
 from textual.screen import Screen
 from dependencies.sim_dependencies import *
