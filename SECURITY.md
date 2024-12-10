@@ -13,7 +13,7 @@ Current not-released version is being supported with security updates.
 
 | Version           | Supported          |
 | ----------------- | ------------------ |
-| snapshot v0.0.7b  | :white_check_mark: |
+| snapshot v0.0.8a  | :white_check_mark: |
 
 ## Reporting a Vulnerability
 
