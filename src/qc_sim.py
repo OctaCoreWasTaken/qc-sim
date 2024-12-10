@@ -18,7 +18,7 @@ FLAG_QC_SIM = False
 FLAG_QC_LEGACY_MODE = False
 FLAG_CONTINUE_ON_ERROR = False
 # DONT FORGET TO UPDATE
-VERSION = "snapshot v0.0.7g" # Merge 7, variation g
+VERSION = "snapshot v0.0.8a" # Merge 8, variation a
 FLAG_RELEASE = False
 
 json_file = read_json()
