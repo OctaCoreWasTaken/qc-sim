@@ -63,7 +63,7 @@ To start, you import the module `qc-sim.py`. This version of qc-sim allows you t
   - `T` (π/8)
   - `CNOT` (Controlled Not)
 
-There also is a class called `MeasuringProbabilities` which contains a function called `CopenhagenStyle` which computes the collapsing probability of 1 or more qubits in relation with eachother. In turn reconstructing the entagnlement relationship between 2 or more qubits.
+There also is a class called `MeasuringProbabilities` which contains a function called `CopenhagenStyle` which computes the collapsing probability of 1 or more qubits in relation with eachother. In turn reconstructing the entanglement relationship between 2 or more qubits.
 
 Example program: `example_cphstyle.py`:
 ```python
